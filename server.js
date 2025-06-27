@@ -28,3 +28,44 @@ mongoose.connect(process.env.MONGO_URI, {
 })
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Connection error:', err));
+
+//User Schema
+const userShema = new mongoose.Schema({
+  email:{type: String, required: true, unique: true},
+  firstName:{type: String, required: true},
+  lastName:{type: String, required: true},
+  phoneNumber:{type: String, required: true, unique: true},
+  password:{type: String, required: true}
+})
+
+const User = mongoose.model('User',userShema)
+const bcrypt = require('bcryptjs');
+//register url
+app.post('/api/auth/register', async (req, res) => {
+  const { email,firstName,lastName,phoneNumber,password } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      email,
+      firstName,
+      lastName,
+      phoneNumber,
+      password: hashedPassword
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+// start Server
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
