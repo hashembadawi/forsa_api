@@ -64,6 +64,36 @@ app.post('/api/auth/register', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+const jwt = require('jsonwebtoken');
+//Login Url
+app.post('/api/auth/login', async (req, res) => {
+  const { email,phoneNumber, password } = req.body;
+
+  try {
+    const user = await User.findOne({
+      $or: [
+        { email: email },
+        { phoneNumber: phoneNumber }
+      ]
+    });
+    if (!user) return res.status(400).json({ message: 'Invalid Info' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
+
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // start Server
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
