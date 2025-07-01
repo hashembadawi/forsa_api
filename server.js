@@ -7,7 +7,9 @@ const cors = require('cors');
 const app = express();
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' })); // زيادة الحد الأقصى لحجم الطلب لاستيعاب الصور
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer <token>
@@ -29,7 +31,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Connection error:', err));
 
-//shchemas
+//schemas
 //User Schema
 const userShema = new mongoose.Schema({
   email:{type: String, required: true, unique: true},
@@ -38,7 +40,8 @@ const userShema = new mongoose.Schema({
   phoneNumber:{type: String, required: true, unique: true},
   password:{type: String, required: true}
 })
-//Product Schema
+
+//Product Schema - محدث لاستيعاب Base64
 const productSchema = new mongoose.Schema({
   pic1:{type: String, required: true},
   pic2:{type: String},
@@ -47,12 +50,13 @@ const productSchema = new mongoose.Schema({
   pic5:{type: String},
   pic6:{type: String},
   price:{type: String, required: true},
+  currency:{type : String,required:true},
   category:{type:Number , required : true},
   subCategory:{type:Number , required : true},
   city:{type: String, required: true},
-  region:{type: String, required: true, unique: true},
+  region:{type: String, required: true},
   createDate:{type: Date, required: true},
-  description:{type: String, required: true, unique: true},
+  description:{type: String, required: true},
 })
 
 //Consts
@@ -61,6 +65,8 @@ const User = mongoose.model('User',userShema)
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const PORT = process.env.PORT || 10000;
+
+// لا نحتاج إلى حفظ الملفات - سنخزن Base64 مباشرة في قاعدة البيانات
 
 //register url
 app.post('/api/auth/register', async (req, res) => {
@@ -86,58 +92,175 @@ app.post('/api/auth/register', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 //Login Url
 app.post('/api/auth/login', async (req, res) => {
   const { email,phoneNumber, password } = req.body;
 
   try {
-    const user = await User.findOne({
-      $or: [
-        { email: email },
-        { phoneNumber: phoneNumber }
-      ]
-    });
+    let query = {};
+    if (email) {
+      query = { email };
+    } else if (phoneNumber) {
+      query = { phoneNumber };
+    } else {
+      return res.status(400).json({ message: 'يرجى إدخال البريد أو رقم الهاتف' });
+    }
+
+    const user = await User.findOne(query);
     if (!user) return res.status(400).json({ message: 'Invalid Info' });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
 
     const token = jwt.sign(
-      { userId: user._id, username: user.username },
+      { userId: user._id, username: email },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
+    
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, username: user.firstName + ' '+  user.lastName , email : user.email});
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// validate Token 
+app.get('/api/auth/validate-token', async (req, res) => {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token is missing' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.status(200).json({ valid: true, user: decoded });
+  } catch (err) {
+    return res.status(401).json({ valid: false, message: 'Invalid or expired token' });
   }
 });
 
 //Products Urls 
-//product add
+//product add - تخزين Base64 في قاعدة البيانات مباشرة
 app.post('/api/product/add', async (req, res) => {
-  const { pic1,pic2,pic3,pic4,pic5,pic6,price,category,subCategory,city,region,createDate,description } = req.body;
-
   try {
-    const newProduct = new Product({
-      pic1,pic2,pic3,pic4,pic5,pic6,
+    const {
       price,
-      category,subCategory,
-      city,region,
+      currency,
+      category,
+      subCategory,
+      city,
+      region,
       createDate,
+      description,
+      images
+    } = req.body;
+
+    // التحقق من وجود البيانات المطلوبة
+    if (!price || !currency || !category || !subCategory || !city || !region || !description) {
+      return res.status(400).json({ message: 'جميع الحقول مطلوبة' });
+    }
+
+    if (!images || images.length === 0) {
+      return res.status(400).json({ message: 'يجب رفع صورة واحدة على الأقل' });
+    }
+
+    // إنشاء المنتج الجديد مع تخزين Base64 مباشرة
+    const productData = {
+      pic1: images[0] || null, // الصورة الأولى مطلوبة
+      pic2: images[1] || null,
+      pic3: images[2] || null,
+      pic4: images[3] || null,
+      pic5: images[4] || null,
+      pic6: images[5] || null,
+      price,
+      currency,
+      category: Number(category),
+      subCategory: Number(subCategory),
+      city,
+      region,
+      createDate: new Date(createDate),
       description
+    };
+
+    const newProduct = new Product(productData);
+    await newProduct.save();
+    
+    res.status(201).json({ 
+      message: 'تم استلام إعلانك بنجاح! سيتم مراجعته من قبل الإدارة ونشره في حال تحقق الشروط.', 
+      product: {
+        _id: newProduct._id,
+        price: newProduct.price,
+        currency: newProduct.currency,
+        category: newProduct.category,
+        subCategory: newProduct.subCategory,
+        city: newProduct.city,
+        region: newProduct.region,
+        description: newProduct.description,
+        createDate: newProduct.createDate,
+        status: 'pending_review' // حالة الإعلان
+      },
+      imagesCount: images.length,
+      note: 'الإعلان في انتظار المراجعة'
     });
 
-    await newProduct.save();
-    res.status(201).json({ message: 'Product registered successfully' });
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(400).json({ message: 'Username already exists' });
+    console.error('خطأ في إضافة المنتج:', err);
+    
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: 'بيانات غير صحيحة', details: err.message });
     }
+    
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'هذا المنتج موجود بالفعل' });
+    }
+    
+    res.status(500).json({ message: 'خطأ في الخادم', error: err.message });
+  }
+});
+
+// route لاسترجاع المنتجات مع الصور Base64
+app.get('/api/products', async (req, res) => {
+  try {
+    const { page = 1, limit = 10, category, city } = req.query;
+    const query = {};
+    
+    if (category) query.category = Number(category);
+    if (city) query.city = city;
+    
+    const products = await Product.find(query)
+      .sort({ createDate: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+      
+    const total = await Product.countDocuments(query);
+    
+    res.json({
+      products,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
+    });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+// route لاسترجاع منتج واحد مع الصور Base64
+app.get('/api/product/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'المنتج غير موجود' });
+    }
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // start Server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
