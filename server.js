@@ -43,6 +43,8 @@ const userShema = new mongoose.Schema({
 
 //Product Schema - محدث لاستيعاب Base64
 const productSchema = new mongoose.Schema({
+  productTitle:{type:String,required:true},
+  userId:{type: String,required : true},
   pic1:{type: String, required: true},
   pic2:{type: String},
   pic3:{type: String},
@@ -58,6 +60,8 @@ const productSchema = new mongoose.Schema({
   createDate:{type: Date, required: true},
   description:{type: String, required: true},
 })
+//index for productTitle and userId
+productSchema.index({ productTitle: 1, userId: 1 }, { unique: true });
 
 //Consts
 const Product = mongoose.model('Product',productSchema)
@@ -96,7 +100,6 @@ app.post('/api/auth/register', async (req, res) => {
 //Login Url
 app.post('/api/auth/login', async (req, res) => {
   const { email,phoneNumber, password } = req.body;
-
   try {
     let query = {};
     if (email) {
@@ -109,7 +112,6 @@ app.post('/api/auth/login', async (req, res) => {
 
     const user = await User.findOne(query);
     if (!user) return res.status(400).json({ message: 'Invalid Info' });
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid username or password' });
 
@@ -120,7 +122,7 @@ app.post('/api/auth/login', async (req, res) => {
     );
     
 
-    res.status(200).json({ token, username: user.firstName + ' '+  user.lastName , email : user.email});
+    res.status(200).json({ token, username: user.firstName + ' '+  user.lastName , email : user.email, userId:user._id});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -147,6 +149,8 @@ app.get('/api/auth/validate-token', async (req, res) => {
 app.post('/api/product/add', async (req, res) => {
   try {
     const {
+      productTitle,
+      userId,
       price,
       currency,
       category,
@@ -157,7 +161,6 @@ app.post('/api/product/add', async (req, res) => {
       description,
       images
     } = req.body;
-
     // التحقق من وجود البيانات المطلوبة
     if (!price || !currency || !category || !subCategory || !city || !region || !description) {
       return res.status(400).json({ message: 'جميع الحقول مطلوبة' });
@@ -169,6 +172,8 @@ app.post('/api/product/add', async (req, res) => {
 
     // إنشاء المنتج الجديد مع تخزين Base64 مباشرة
     const productData = {
+      productTitle:productTitle,
+      userId:userId,
       pic1: images[0] || null, // الصورة الأولى مطلوبة
       pic2: images[1] || null,
       pic3: images[2] || null,
