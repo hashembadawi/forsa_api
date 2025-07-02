@@ -146,7 +146,7 @@ app.get('/api/auth/validate-token', async (req, res) => {
 
 //Products Urls 
 //product add - تخزين Base64 في قاعدة البيانات مباشرة
-app.post('/api/product/add', async (req, res) => {
+app.post('/api/userProducts/add', async (req, res) => {
   try {
     const {
       productTitle,
@@ -226,27 +226,34 @@ app.post('/api/product/add', async (req, res) => {
   }
 });
 
-// route لاسترجاع المنتجات مع الصور Base64
-app.get('/api/products', async (req, res) => {
+// get all products for User (paginated)
+app.get('/api/userProducts/:userId', authenticateToken, async (req, res) => {
   try {
-    const { page = 1, limit = 10, category, city } = req.query;
-    const query = {};
-    
-    if (category) query.category = Number(category);
-    if (city) query.city = city;
-    
-    const products = await Product.find(query)
+    const { page = 1, limit = 5 } = req.query;
+    const userIdFromParams = req.params.userId;
+    const userIdFromToken = req.user.userId;
+
+    if (!userIdFromParams) {
+      return res.status(400).json({ message: 'userId مطلوب' });
+    }
+
+    if (userIdFromParams !== userIdFromToken) {
+      return res.status(403).json({ message: 'غير مصرح لك بالوصول' });
+    }
+
+    const products = await Product.find({ userId: userIdFromParams })
       .sort({ createDate: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
-      
-    const total = await Product.countDocuments(query);
-    
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+
+    const total = await Product.countDocuments({ userId: userIdFromParams });
+
     res.json({
+      status: 'success',
+      total,
+      page: parseInt(page),
+      limit: parseInt(limit),
       products,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-      total
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
