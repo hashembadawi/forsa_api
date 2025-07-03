@@ -305,15 +305,33 @@ app.put('/api/userProducts/update/:id', authenticateToken, async (req, res) => {
 });
 
 // route لاسترجاع منتج واحد مع الصور Base64
-app.get('/api/product/:id', async (req, res) => {
+app.get('/api/products', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'المنتج غير موجود' });
-    }
-    res.json(product);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    // دعم pagination اختياري (صفحة وعدد العناصر لكل صفحة)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    // جلب الإعلانات من قاعدة البيانات
+    const products = await Product.find()
+      .sort({ createDate: -1 }) // أحدث الإعلانات أولاً
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const mappedProducts = products.map(p => ({
+      ...p.toObject(),
+      images: [p.pic1, p.pic2, p.pic3, p.pic4, p.pic5, p.pic6].filter(Boolean),
+    }));
+    // إرجاع البيانات
+    res.json({
+      page,
+      limit,
+      products :mappedProducts,
+    });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ message: 'خطأ في جلب الإعلانات' });
   }
 });
 
