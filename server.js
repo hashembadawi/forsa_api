@@ -174,12 +174,12 @@ app.post('/api/userProducts/add', async (req, res) => {
     const productData = {
       productTitle:productTitle,
       userId:userId,
-      pic1: images[0] || null, // الصورة الأولى مطلوبة
-      pic2: images[1] || null,
-      pic3: images[2] || null,
-      pic4: images[3] || null,
-      pic5: images[4] || null,
-      pic6: images[5] || null,
+      pic1: images[0] || '', // الصورة الأولى مطلوبة
+      pic2: images[1] || '',
+      pic3: images[2] || '',
+      pic4: images[3] || '',
+      pic5: images[4] || '',
+      pic6: images[5] || '',
       price,
       currency,
       category: Number(category),
@@ -194,21 +194,7 @@ app.post('/api/userProducts/add', async (req, res) => {
     await newProduct.save();
     
     res.status(201).json({ 
-      message: 'تم استلام إعلانك بنجاح! سيتم مراجعته من قبل الإدارة ونشره في حال تحقق الشروط.', 
-      product: {
-        _id: newProduct._id,
-        price: newProduct.price,
-        currency: newProduct.currency,
-        category: newProduct.category,
-        subCategory: newProduct.subCategory,
-        city: newProduct.city,
-        region: newProduct.region,
-        description: newProduct.description,
-        createDate: newProduct.createDate,
-        status: 'pending_review' // حالة الإعلان
-      },
-      imagesCount: images.length,
-      note: 'الإعلان في انتظار المراجعة'
+      message: 'تم استلام إعلانك بنجاح.'
     });
 
   } catch (err) {
@@ -247,16 +233,74 @@ app.get('/api/userProducts/:userId', authenticateToken, async (req, res) => {
       .skip((parseInt(page) - 1) * parseInt(limit));
 
     const total = await Product.countDocuments({ userId: userIdFromParams });
+    const mappedProducts = products.map(p => ({
+      ...p.toObject(),
+      images: [p.pic1, p.pic2, p.pic3, p.pic4, p.pic5, p.pic6].filter(Boolean),
+    }));
 
     res.json({
       status: 'success',
       total,
       page: parseInt(page),
       limit: parseInt(limit),
-      products,
+      products : mappedProducts,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+//delete product
+app.delete('/api/userProducts/:id', authenticateToken, async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const userId = req.user.userId;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'الإعلان غير موجود' });
+    }
+
+    if (product.userId !== userId) {
+      return res.status(403).json({ message: 'غير مصرح لك بحذف هذا الإعلان' });
+    }
+
+    await Product.findByIdAndDelete(productId);
+    res.json({ message: 'تم حذف الإعلان بنجاح' });
+  } catch (err) {
+    res.status(500).json({ message: 'فشل في حذف الإعلان', error: err.message });
+  }
+});
+
+//update product
+app.put('/api/userProducts/update/:id', authenticateToken, async (req, res) => {
+  try {
+    console.log('start')
+    const { id } = req.params;
+    const { productTitle, price, currency, description } = req.body;
+    const userId = req.user.userId;
+
+    const ad = await Product.findById(id);
+
+    if (!ad) {
+      return res.status(404).json({ message: 'الإعلان غير موجود' });
+    }
+
+    if (ad.userId !== userId) {
+      return res.status(403).json({ message: 'غير مصرح لك بتعديل هذا الإعلان' });
+    }
+
+    ad.productTitle = productTitle || ad.productTitle;
+    ad.price = price || ad.price;
+    ad.currency = currency || ad.currency;
+    ad.description = description || ad.description;
+
+    await ad.save();
+
+    res.json({ message: 'تم تعديل الإعلان بنجاح' });
+  } catch (err) {
+    console.error('خطأ في التعديل:', err);
+    res.status(500).json({ message: 'خطأ في الخادم', error: err.message });
   }
 });
 
