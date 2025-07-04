@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema({
 const productSchema = new mongoose.Schema({
   productTitle: { type: String, required: true },
   userId: { type: String, required: true },
+  userName:{type :String,required:true},
+  userPhone:{type :String,required:true},
   pic1: { type: String, required: true },
   pic2: { type: String },
   pic3: { type: String },
@@ -138,7 +140,8 @@ app.post('/api/auth/login', async (req, res) => {
       token, 
       username: `${user.firstName} ${user.lastName}`,
       email: user.email,
-      userId: user._id
+      userId: user._id,
+      userPhone: user.phoneNumber
     });
   } catch (err) {
     handleServerError(res, err);
@@ -153,6 +156,7 @@ app.get('/api/auth/validate-token', authenticateToken, (req, res) => {
 app.post('/api/userProducts/add', authenticateToken, async (req, res) => {
   try {
     const requiredFields = [
+      'userId','userPhone','userName',
       'productTitle', 'price', 'currency', 'category',
       'subCategory', 'city', 'region', 'description', 'images'
     ];
@@ -172,6 +176,8 @@ app.post('/api/userProducts/add', authenticateToken, async (req, res) => {
     const productData = {
       ...req.body,
       userId: req.user.userId,
+      userName:req.user.userName,
+      userPhone:req.user.userPhone,
       createDate: new Date(),
       pic1: req.body.images[0],
       pic2: req.body.images[1] || '',
