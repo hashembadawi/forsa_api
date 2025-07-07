@@ -138,8 +138,8 @@ app.post('/api/auth/login', async (req, res) => {
 
     res.status(200).json({ 
       token, 
-      username: `${user.firstName} ${user.lastName}`,
-      email: user.email,
+      userName: `${user.firstName} ${user.lastName}`,
+      userEmail: user.email,
       userId: user._id,
       userPhone: user.phoneNumber
     });
@@ -172,12 +172,11 @@ app.post('/api/userProducts/add', authenticateToken, async (req, res) => {
     if (req.body.images.length === 0) {
       return res.status(400).json({ message: 'At least one image is required' });
     }
-
     const productData = {
       ...req.body,
-      userId: req.user.userId,
-      userName:req.user.userName,
-      userPhone:req.user.userPhone,
+      userId: req.body.userId,
+      userName:req.body.userName,
+      userPhone:req.body.userPhone,
       createDate: new Date(),
       pic1: req.body.images[0],
       pic2: req.body.images[1] || '',
