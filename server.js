@@ -373,6 +373,7 @@ app.put('/api/userProducts/update/:id', authenticateToken, async (req, res) => {
 
 app.get('/api/products', async (req, res) => {
   try {
+    console.log('Fetching products with pagination');
     const { page = 1, limit = 20 } = req.query;
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
