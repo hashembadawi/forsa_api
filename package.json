@@ -17,6 +17,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
     "mongose": "^0.0.2-security",
-    "multer": "^2.0.1"
+    "multer": "^2.0.1",
+    "nodemailer": "^7.0.5",
+    "twilio": "^5.7.3"
   }
 }

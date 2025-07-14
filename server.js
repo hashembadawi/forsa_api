@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -27,7 +28,9 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   phoneNumber: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  isVerified: { type: Boolean, default: false },
+  verificationCode: String
 });
 
 const productSchema = new mongoose.Schema({
@@ -80,33 +83,122 @@ const handleServerError = (res, err) => {
   console.error('Server Error:', err);
   res.status(500).json({ message: 'Internal server error', error: err.message });
 };
+//sendEmailNotification
+async function sendVerificationEmail(email, code) {
+  let transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'hashembadawi48@gmail.com',
+      pass: 'iljg fzez kvcw uiuq',
+    },
+  });
+  await transporter.sendMail({
+    from: '"sahib com" <hashembadawi48@gmail.com>',
+    to: email,
+    subject: 'رمز التحقق',
+    text: `رمز التحقق الخاص بك هو: ${code}`,
+  });
+}
 
 // Routes
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, firstName, lastName, phoneNumber, password } = req.body;
-    
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { phoneNumber }] 
+
+    // تحقق إذا مستخدم موجود بنفس البريد أو رقم الهاتف
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phoneNumber }],
     });
-    
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email or phone number' });
+      return res.status(400).json({
+        message: 'User already exists with this email or phone number',
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // توليد رمز تحقق 4 أرقام
+    const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
+
     const newUser = new User({
       email,
       firstName,
       lastName,
       phoneNumber,
-      password: hashedPassword
+      password: hashedPassword,
+      isVerified: false,
+      verificationCode,
     });
 
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
+
+    // إرسال رمز التحقق حسب ما أدخل المستخدم
+    if (email) {
+      await sendVerificationEmail(email, verificationCode);
+    } else if (phoneNumber) {
+      // await sendVerificationSMS(phoneNumber, verificationCode);
+    }
+
+    return res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
-    handleServerError(res, err);
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/auth/resend-code', async (req, res) => {
+  try {
+    const { emailOrPhone } = req.body;
+
+    const user = await User.findOne({
+      $or: [{ email: emailOrPhone }, { phoneNumber: emailOrPhone }],
+    });
+
+    if (!user) return res.status(400).json({ message: 'المستخدم غير موجود' });
+    if (user.isVerified)
+      return res.status(400).json({ message: 'الحساب مفعل مسبقاً' });
+
+    const newCode = Math.floor(1000 + Math.random() * 9000).toString();
+    user.verificationCode = newCode;
+    await user.save();
+
+    if (user.email) {
+      await sendVerificationEmail(user.email, newCode);
+    } else if (user.phoneNumber) {
+      // await sendVerificationSMS(user.phoneNumber, newCode);
+    }
+
+    res.json({ message: 'تم إرسال رمز جديد' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'خطأ في الخادم' });
+  }
+});
+
+// API للتحقق من رمز التحقق
+app.post('/api/auth/verify', async (req, res) => {
+  try {
+    const { emailOrPhone, code } = req.body;
+
+    const user = await User.findOne({
+      $or: [{ email: emailOrPhone }, { phoneNumber: emailOrPhone }],
+    });
+    if (!user) return res.status(400).json({ message: 'المستخدم غير موجود' });
+
+    if (user.isVerified)
+      return res.status(400).json({ message: 'الحساب مفعل مسبقاً' });
+
+    if (user.verificationCode !== code)
+      return res.status(400).json({ message: 'رمز التحقق غير صحيح' });
+
+    user.isVerified = true;
+    user.verificationCode = null;
+    await user.save();
+
+    res.json({ message: 'تم التحقق من الحساب بنجاح' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
