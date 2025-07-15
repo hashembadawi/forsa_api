@@ -349,10 +349,96 @@ app.get('/api/options', (req, res) => {
     { id: 74, name: 'وظائف تعليمية', categoryId: 9 },
     { id: 75, name: 'وظائف صحية', categoryId: 9 }
   ];
+
+  const Province = [
+    { id: 1, name: 'الحسكة'},
+    { id: 2, name: 'الرقة' },
+    { id: 3, name: 'حلب'},
+    { id: 4, name: 'إدلب'},
+    { id: 5, name: 'اللاذقية'},
+    { id: 6, name: 'طرطوس'},
+    { id: 7, name: 'دير الزور'},
+    { id: 8, name: 'حماة'},
+    { id: 9, name: 'حمص'},
+    { id: 10, name: 'ريف دمشق'},
+    { id: 11, name: 'دمشق'},
+    { id: 12, name: 'السويداء'},
+    { id: 13, name: 'درعا'},
+    { id: 14, name: 'القنيطرة'}
+  ];
+  const majorAreas = [
+    { id: 1, name: 'الحسكة', ProvinceId: 1 },
+    { id: 2, name: 'القامشلي', ProvinceId: 1 },
+    { id: 3, name: 'رأس العين', ProvinceId: 1 },
+    { id: 4, name: 'المالكية', ProvinceId: 1 },
+
+    { id: 5, name: 'الرقة', ProvinceId: 2 },
+    { id: 6, name: 'الثورة', ProvinceId: 2 },
+    { id: 7, name: 'تل أبيض', ProvinceId: 2 },
+
+    { id: 8, name: 'حلب', ProvinceId: 3 }, 
+    { id: 9, name: 'عفرين', ProvinceId: 3 },
+    { id: 10, name: 'اعزاز', ProvinceId: 3 },
+    { id: 11, name: 'الباب', ProvinceId: 3 },
+    { id: 12, name: 'منبج', ProvinceId: 3 },
+
+    { id: 13, name: 'إدلب', ProvinceId: 4 },
+    { id: 14, name: 'جسر الشغور', ProvinceId: 4 },
+    { id: 15, name: 'أريحا', ProvinceId: 4 },
+    { id: 16, name: 'معرة النعمان', ProvinceId: 4 },
+
+    { id: 17, name: 'اللاذقية', ProvinceId: 5 },
+    { id: 18, name: 'جبلة', ProvinceId: 5 },
+    { id: 19, name: 'القرداحة', ProvinceId: 5 },
+    { id: 20, name: 'الحفة', ProvinceId: 5 },
+
+    { id: 21, name: 'طرطوس', ProvinceId: 6 },
+    { id: 22, name: 'بانياس', ProvinceId: 6 },
+    { id: 23, name: 'صافيتا', ProvinceId: 6 },
+    { id: 24, name: 'الشيخ بدر', ProvinceId: 6 },
+
+    { id: 25, name: 'دير الزور', ProvinceId: 7 },
+    { id: 26, name: 'الميادين', ProvinceId: 7 },
+    { id: 27, name: 'البوكمال', ProvinceId: 7 },
+
+    { id: 28, name: 'حماة', ProvinceId: 8 },
+    { id: 29, name: 'محردة', ProvinceId: 8 },
+    { id: 30, name: 'مصياف', ProvinceId: 8 },
+    { id: 31, name: 'السلمية', ProvinceId: 8 },
+
+    { id: 32, name:'حمص' ,ProvinceId: 9 },
+    { id: 33, name: 'تدمر', ProvinceId: 9 },
+    { id: 34, name: 'القصير', ProvinceId: 9 },
+    { id: 35, name: 'الرستن', ProvinceId: 9 },
+
+    { id: 36, name: 'دوما', ProvinceId: 10 },
+    { id: 37, name: 'داريا', ProvinceId: 10 },
+    { id: 38, name: 'القطيفة', ProvinceId: 10 },
+    { id: 39, name: 'الزبداني', ProvinceId: 10 },
+    { id: 40, name: 'يبرود', ProvinceId: 10 },
+
+    { id: 41, name: 'دمشق', ProvinceId: 11 },
+    { id: 42, name: 'المزة', ProvinceId: 11 },
+    { id: 43, name: 'كفرسوسة', ProvinceId: 11 },
+    { id: 44, name: 'المالكي', ProvinceId: 11 },
+
+    { id: 45, name: 'السويداء', ProvinceId: 12 },
+    { id: 46, name: 'شهبا', ProvinceId: 12 },
+    { id: 47, name: 'صلخد', ProvinceId: 12 },
+
+    { id: 48, name: 'درعا', ProvinceId: 13 },
+    { id: 49, name: 'بصرى', ProvinceId: 13 },
+    { id: 50, name: 'الحراك', ProvinceId: 13 },
+    { id: 51, name: 'إزرع', ProvinceId: 13 },
+
+    { id: 52, name: 'القنيطرة', ProvinceId: 14 }
+  ];
   res.json({ 
     currencies, 
     categories, 
-    subCategories 
+    subCategories,
+    Province,
+    majorAreas
   });
 });
 // Product Routes
