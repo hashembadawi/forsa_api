@@ -644,6 +644,41 @@ app.get('/api/products/search', async (req, res) => {
   }
 });
 
+// Search products by categoryId and subCategoryId
+app.get('/api/products/search-by-category', async (req, res) => {
+  try {
+    const { categoryId, subCategoryId, page = 1, limit = 20 } = req.query;
+    const filter = {};
+    if (categoryId) filter.categoryId = Number(categoryId);
+    if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [products, total] = await Promise.all([
+      Product.find(filter)
+        .sort({ createDate: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean(),
+      Product.countDocuments(filter)
+    ]);
+
+    const mappedProducts = products.map(p => ({
+      ...p,
+      images: [p.pic1, p.pic2, p.pic3, p.pic4, p.pic5, p.pic6].filter(Boolean)
+    }));
+
+    res.json({
+      total,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      products: mappedProducts
+    });
+  } catch (err) {
+    handleServerError(res, err);
+  }
+});
+
 // Server Start
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
