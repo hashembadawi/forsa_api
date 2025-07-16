@@ -47,10 +47,14 @@ const productSchema = new mongoose.Schema({
   price: { type: String, required: true },
   currencyId: { type: Number, required: true },
   currencyName: { type: String, required: true },
-  category: { type: Number, required: true },
-  subCategory: { type: Number, required: true },
-  city: { type: String, required: true },
-  region: { type: String, required: true },
+  categoryId: { type: Number, required: true },
+  categoryName: { type: String, required: true },
+  subCategoryId: { type: Number, required: true },
+  subCategoryName: { type: String, required: true },
+  cityId: { type: Number, required: true },
+  cityName: { type: String, required: true },
+  regionId: { type: Number, required: true },
+  regionName: { type: String, required: true },
   createDate: { type: Date, required: true },
   description: { type: String, required: true }
 });
@@ -446,8 +450,8 @@ app.post('/api/userProducts/add', authenticateToken, async (req, res) => {
   try {
     const requiredFields = [
       'userId','userPhone','userName',
-      'productTitle', 'price', 'currencyId','currencyName', 'category',
-      'subCategory', 'city', 'region', 'description', 'images'
+      'productTitle', 'price', 'currencyId','currencyName', 'categoryId', 'categoryName',
+      'subCategoryId','subCategoryName', 'cityId','cityName', 'regionId','regionName', 'description', 'images'
     ];
     
     const missingFields = requiredFields.filter(field => !req.body[field]);
