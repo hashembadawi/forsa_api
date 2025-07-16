@@ -679,6 +679,42 @@ app.get('/api/products/search-by-category', async (req, res) => {
   }
 });
 
+// Search products by part of productTitle (case-insensitive)
+app.get('/api/products/search-by-title', async (req, res) => {
+  try {
+    const { title, page = 1, limit = 20 } = req.query;
+    if (!title) {
+      return res.status(400).json({ message: 'title query parameter is required' });
+    }
+
+    const regex = new RegExp(title, 'i'); // 'i' for case-insensitive
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [products, total] = await Promise.all([
+      Product.find({ productTitle: regex })
+        .sort({ createDate: -1 })
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean(),
+      Product.countDocuments({ productTitle: regex })
+    ]);
+
+    const mappedProducts = products.map(p => ({
+      ...p,
+      images: [p.pic1, p.pic2, p.pic3, p.pic4, p.pic5, p.pic6].filter(Boolean)
+    }));
+
+    res.json({
+      total,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      products: mappedProducts
+    });
+  } catch (err) {
+    handleServerError(res, err);
+  }
+});
+
 // Server Start
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
