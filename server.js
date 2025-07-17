@@ -109,6 +109,7 @@ async function sendVerificationEmail(email, code) {
 // Register with email
 app.post('/api/auth/register-email', async (req, res) => {
   try {
+    console.log('Registering user with email:', req.body);
     const { email, firstName, lastName, password } = req.body;
 
     if (!email || !firstName || !lastName || !password) {
