@@ -106,48 +106,73 @@ async function sendVerificationEmail(email, code) {
 }
 
 // Routes
-app.post('/api/auth/register', async (req, res) => {
+// Register with email
+app.post('/api/auth/register-email', async (req, res) => {
   try {
-    const { email, firstName, lastName, phoneNumber, password } = req.body;
+    const { email, firstName, lastName, password } = req.body;
 
-    // تحقق إذا مستخدم موجود بنفس البريد أو رقم الهاتف
-    const existingUser = await User.findOne({
-      $or: [{ email }, { phoneNumber }],
-    });
+    if (!email || !firstName || !lastName || !password) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({
-        message: 'User already exists with this email or phone number',
-      });
+      return res.status(400).json({ message: 'User already exists with this email' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // توليد رمز تحقق 4 أرقام
     const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
 
     const newUser = new User({
       email,
       firstName,
       lastName,
-      phoneNumber,
       password: hashedPassword,
       isVerified: false,
       verificationCode,
     });
 
     await newUser.save();
+    await sendVerificationEmail(email, verificationCode);
 
-    // إرسال رمز التحقق حسب ما أدخل المستخدم
-    if (email) {
-      await sendVerificationEmail(email, verificationCode);
-    } else if (phoneNumber) {
-      // await sendVerificationSMS(phoneNumber, verificationCode);
+    return res.status(201).json({ message: 'User registered successfully with email' });
+  } catch (err) {
+    handleServerError(res, err);
+  }
+});
+
+// Register with phone
+app.post('/api/auth/register-phone', async (req, res) => {
+  try {
+    const { phoneNumber, firstName, lastName, password } = req.body;
+
+    if (!phoneNumber || !firstName || !lastName || !password) {
+      return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    return res.status(201).json({ message: 'User registered successfully' });
+    const existingUser = await User.findOne({ phoneNumber });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists with this phone number' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const newUser = new User({
+      phoneNumber,
+      firstName,
+      lastName,
+      password: hashedPassword,
+      isVerified: false,
+      verificationCode,
+    });
+
+    await newUser.save();
+    // await sendVerificationSMS(phoneNumber, verificationCode); // Implement SMS sending
+
+    return res.status(201).json({ message: 'User registered successfully with phone' });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    handleServerError(res, err);
   }
 });
 
