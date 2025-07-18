@@ -89,7 +89,18 @@ const handleServerError = (res, err) => {
 };
 
 // Use environment variables for security
+const accountSid = 'ACdb911f6a553cfbb14a37e5b45b0960d0'
+const authToken = 'da014efa4f2e625f91bd27fea82f9e2d'
+const client = twilio(accountSid, authToken);
 
+async function sendVerificationWhatsApp(phoneNumber, code) {
+  return client.messages.create({
+    from: 'whatsapp:+14155238886', // Your Twilio WhatsApp number
+    contentSid: 'HX229f5a04fd0510ce1b071852155d3e75', // Your approved template SID
+    contentVariables: JSON.stringify({ "1": code }), // Replace "1" with the variable index in your template
+    to: `whatsapp:${phoneNumber}` // Must be in format +905510300730
+  });
+}
 // Routes
 // Register with phone
 app.post('/api/auth/register-phone', async (req, res) => {
@@ -118,7 +129,7 @@ app.post('/api/auth/register-phone', async (req, res) => {
     });
 
     await newUser.save();
-    //await sendVerificationWhatsApp(phoneNumber, verificationCode);
+    await sendVerificationWhatsApp(phoneNumber, verificationCode);
 
     return res.status(201).json({ message: 'User registered successfully with phone' });
   } catch (err) {
