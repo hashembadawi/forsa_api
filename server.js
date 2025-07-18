@@ -24,10 +24,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Schemas
 const userSchema = new mongoose.Schema({
-  email: { type: String, unique: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  phoneNumber: { type: String, unique: true },
+  phoneNumber: { type: String,required : true, unique: true },
   password: { type: String, required: true },
   isVerified: { type: Boolean, default: false },
   verificationCode: String
@@ -107,7 +106,7 @@ async function sendVerificationEmail(email, code) {
 
 // Routes
 // Register with email
-app.post('/api/auth/register-email', async (req, res) => {
+/* app.post('/api/auth/register-email', async (req, res) => {
   try {
     console.log('Registering user with email:', req.body);
     const { email, firstName, lastName, password } = req.body;
@@ -140,7 +139,7 @@ app.post('/api/auth/register-email', async (req, res) => {
   } catch (err) {
     handleServerError(res, err);
   }
-});
+}); */
 
 // Register with phone
 app.post('/api/auth/register-phone', async (req, res) => {
