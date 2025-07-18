@@ -89,8 +89,8 @@ const handleServerError = (res, err) => {
 };
 
 // Use environment variables for security
-const accountSid = process.env.TWILIO_ACCOUNT_SID.replace(/'/g, '');
-const authToken = process.env.TWILIO_AUTH_TOKEN.replace(/'/g, '');
+const accountSid = 'ACdb911f6a553cfbb14a37e5b45b0960d0'
+const authToken = 'da014efa4f2e625f91bd27fea82f9e2d'
 const client = twilio(accountSid, authToken);
 
 async function sendVerificationWhatsApp(phoneNumber, code) {
