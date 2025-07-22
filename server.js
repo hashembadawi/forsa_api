@@ -480,11 +480,12 @@ app.put('/api/userProducts/update/:id', authenticateToken, async (req, res) => {
       return res.status(403).json({ message: 'Unauthorized to update this product' });
     }
 
-    const { productTitle, price, currency, description } = req.body;
+    const { productTitle, price, currencyId,currencyName, description } = req.body;
     const updates = {
       productTitle: productTitle || product.productTitle,
       price: price || product.price,
-      currency: currency || product.currency,
+      currencyId: currencyId || product.currency,
+      currencyName: currencyName || product.currencyName,
       description: description || product.description
     };
 
