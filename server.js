@@ -272,93 +272,110 @@ app.get('/api/options', (req, res) => {
   ];
 
   const Province = [
-    { id: 1, name: 'الحسكة'},
-    { id: 2, name: 'الرقة' },
-    { id: 3, name: 'حلب'},
-    { id: 4, name: 'إدلب'},
-    { id: 5, name: 'اللاذقية'},
-    { id: 6, name: 'طرطوس'},
-    { id: 7, name: 'دير الزور'},
-    { id: 8, name: 'حماة'},
-    { id: 9, name: 'حمص'},
-    { id: 10, name: 'ريف دمشق'},
-    { id: 11, name: 'دمشق'},
-    { id: 12, name: 'السويداء'},
-    { id: 13, name: 'درعا'},
-    { id: 14, name: 'القنيطرة'}
-  ];
+  { id: 1, name: 'الحسكة'},
+  { id: 2, name: 'الرقة' },
+  { id: 3, name: 'حلب'},
+  { id: 4, name: 'إدلب'},
+  { id: 5, name: 'اللاذقية'},
+  { id: 6, name: 'طرطوس'},
+  { id: 7, name: 'دير الزور'},
+  { id: 8, name: 'حماة'},
+  { id: 9, name: 'حمص'},
+  { id: 10, name: 'ريف دمشق'},
+  { id: 11, name: 'دمشق'},
+  { id: 12, name: 'السويداء'},
+  { id: 13, name: 'درعا'},
+  { id: 14, name: 'القنيطرة'}
+];
 
-  const majorAreas = [
+const majorAreas = [
+  // الحسكة
   { id: 1, name: 'الحسكة', ProvinceId: 1 },
   { id: 2, name: 'القامشلي', ProvinceId: 1 },
   { id: 3, name: 'رأس العين', ProvinceId: 1 },
   { id: 4, name: 'المالكية', ProvinceId: 1 },
 
+  // الرقة
   { id: 5, name: 'الرقة', ProvinceId: 2 },
   { id: 6, name: 'الثورة', ProvinceId: 2 },
   { id: 7, name: 'تل أبيض', ProvinceId: 2 },
 
-  { id: 8, name: 'حلب', ProvinceId: 3 }, 
-  { id: 9, name: 'عفرين', ProvinceId: 3 },
-  { id: 10, name: 'اعزاز', ProvinceId: 3 },
-  { id: 11, name: 'الباب', ProvinceId: 3 },
-  { id: 12, name: 'منبج', ProvinceId: 3 },
+  // حلب
+  { id: 8, name: 'السحارة', ProvinceId: 3 },
+  { id: 9, name: 'حلب', ProvinceId: 3 }, 
+  { id: 10, name: 'عفرين', ProvinceId: 3 },
+  { id: 11, name: 'اعزاز', ProvinceId: 3 },
+  { id: 12, name: 'الباب', ProvinceId: 3 },
+  { id: 13, name: 'منبج', ProvinceId: 3 },
 
-  { id: 13, name: 'رام حمدان', ProvinceId: 4 },
-  { id: 14, name: 'معرتمصرين', ProvinceId: 4 },
-  { id: 15, name: 'كفر يحمول', ProvinceId: 4 },
-  { id: 16, name: 'زردنا', ProvinceId: 4 },
-  { id: 17, name: 'إدلب', ProvinceId: 4 },
-  { id: 18, name: 'جسر الشغور', ProvinceId: 4 },
-  { id: 19, name: 'أريحا', ProvinceId: 4 },
-  { id: 20, name: 'معرة النعمان', ProvinceId: 4 },
+  // إدلب 
+  { id: 14, name: 'سراقب', ProvinceId: 4 },
+  { id: 15, name: 'رام حمدان', ProvinceId: 4 },
+  { id: 16, name: 'معرتمصرين', ProvinceId: 4 },
+  { id: 17, name: 'كفر يحمول', ProvinceId: 4 },
+  { id: 18, name: 'زردنا', ProvinceId: 4 },
+  { id: 19, name: 'إدلب', ProvinceId: 4 },
+  { id: 20, name: 'جسر الشغور', ProvinceId: 4 },
+  { id: 21, name: 'أريحا', ProvinceId: 4 },
+  { id: 22, name: 'معرة النعمان', ProvinceId: 4 },
 
-  { id: 21, name: 'اللاذقية', ProvinceId: 5 },
-  { id: 22, name: 'جبلة', ProvinceId: 5 },
-  { id: 23, name: 'القرداحة', ProvinceId: 5 },
-  { id: 24, name: 'الحفة', ProvinceId: 5 },
+  // اللاذقية
+  { id: 23, name: 'اللاذقية', ProvinceId: 5 },
+  { id: 24, name: 'جبلة', ProvinceId: 5 },
+  { id: 25, name: 'القرداحة', ProvinceId: 5 },
+  { id: 26, name: 'الحفة', ProvinceId: 5 },
 
-  { id: 25, name: 'طرطوس', ProvinceId: 6 },
-  { id: 26, name: 'بانياس', ProvinceId: 6 },
-  { id: 27, name: 'صافيتا', ProvinceId: 6 },
-  { id: 28, name: 'الشيخ بدر', ProvinceId: 6 },
+  // طرطوس
+  { id: 27, name: 'طرطوس', ProvinceId: 6 },
+  { id: 28, name: 'بانياس', ProvinceId: 6 },
+  { id: 29, name: 'صافيتا', ProvinceId: 6 },
+  { id: 30, name: 'الشيخ بدر', ProvinceId: 6 },
 
-  { id: 29, name: 'دير الزور', ProvinceId: 7 },
-  { id: 30, name: 'الميادين', ProvinceId: 7 },
-  { id: 31, name: 'البوكمال', ProvinceId: 7 },
+  // دير الزور
+  { id: 31, name: 'دير الزور', ProvinceId: 7 },
+  { id: 32, name: 'الميادين', ProvinceId: 7 },
+  { id: 33, name: 'البوكمال', ProvinceId: 7 },
 
-  { id: 32, name: 'حماة', ProvinceId: 8 },
-  { id: 33, name: 'محردة', ProvinceId: 8 },
-  { id: 34, name: 'مصياف', ProvinceId: 8 },
-  { id: 35, name: 'السلمية', ProvinceId: 8 },
+  // حماة
+  { id: 34, name: 'حماة', ProvinceId: 8 },
+  { id: 35, name: 'محردة', ProvinceId: 8 },
+  { id: 36, name: 'مصياف', ProvinceId: 8 },
+  { id: 37, name: 'السلمية', ProvinceId: 8 },
 
-  { id: 36, name:'حمص' ,ProvinceId: 9 },
-  { id: 37, name: 'تدمر', ProvinceId: 9 },
-  { id: 38, name: 'القصير', ProvinceId: 9 },
-  { id: 39, name: 'الرستن', ProvinceId: 9 },
+  // حمص
+  { id: 38, name:'حمص', ProvinceId: 9 },
+  { id: 39, name: 'تدمر', ProvinceId: 9 },
+  { id: 40, name: 'القصير', ProvinceId: 9 },
+  { id: 41, name: 'الرستن', ProvinceId: 9 },
 
-  { id: 40, name: 'دوما', ProvinceId: 10 },
-  { id: 41, name: 'داريا', ProvinceId: 10 },
-  { id: 42, name: 'القطيفة', ProvinceId: 10 },
-  { id: 43, name: 'الزبداني', ProvinceId: 10 },
-  { id: 44, name: 'يبرود', ProvinceId: 10 },
+  // ريف دمشق
+  { id: 42, name: 'دوما', ProvinceId: 10 },
+  { id: 43, name: 'داريا', ProvinceId: 10 },
+  { id: 44, name: 'القطيفة', ProvinceId: 10 },
+  { id: 45, name: 'الزبداني', ProvinceId: 10 },
+  { id: 46, name: 'يبرود', ProvinceId: 10 },
 
-  { id: 45, name: 'دمشق', ProvinceId: 11 },
-  { id: 46, name: 'المزة', ProvinceId: 11 },
-  { id: 47, name: 'كفرسوسة', ProvinceId: 11 },
-  { id: 48, name: 'المالكي', ProvinceId: 11 },
+  // دمشق
+  { id: 47, name: 'دمشق', ProvinceId: 11 },
+  { id: 48, name: 'المزة', ProvinceId: 11 },
+  { id: 49, name: 'كفرسوسة', ProvinceId: 11 },
+  { id: 50, name: 'المالكي', ProvinceId: 11 },
 
-  { id: 49, name: 'السويداء', ProvinceId: 12 },
-  { id: 50, name: 'شهبا', ProvinceId: 12 },
-  { id: 51, name: 'صلخد', ProvinceId: 12 },
+  // السويداء
+  { id: 51, name: 'السويداء', ProvinceId: 12 },
+  { id: 52, name: 'شهبا', ProvinceId: 12 },
+  { id: 53, name: 'صلخد', ProvinceId: 12 },
 
-  { id: 52, name: 'درعا', ProvinceId: 13 },
-  { id: 53, name: 'بصرى', ProvinceId: 13 },
-  { id: 54, name: 'الحراك', ProvinceId: 13 },
-  { id: 55, name: 'إزرع', ProvinceId: 13 },
+  // درعا
+  { id: 54, name: 'درعا', ProvinceId: 13 },
+  { id: 55, name: 'بصرى', ProvinceId: 13 },
+  { id: 56, name: 'الحراك', ProvinceId: 13 },
+  { id: 57, name: 'إزرع', ProvinceId: 13 },
 
-  { id: 56, name: 'القنيطرة', ProvinceId: 14 }
+  // القنيطرة
+  { id: 58, name: 'القنيطرة', ProvinceId: 14 }
 ];
+
 
   res.json({ 
     currencies, 
