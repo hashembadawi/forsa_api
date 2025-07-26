@@ -45,12 +45,12 @@ class AdRepository {
     if (cityId) filter.cityId = Number(cityId);
     if (regionId) filter.regionId = Number(regionId);
     const skip = (page - 1) * limit;
-    const ads = await ad.find(filter)
+    const ads = await Ad.find(filter)
       .sort({ createDate: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
-    const total = await ad.countDocuments(filter);
+    const total = await Ad.countDocuments(filter);
     return { ads, total };
   }
 
@@ -59,7 +59,7 @@ class AdRepository {
     if (categoryId) filter.categoryId = Number(categoryId);
     if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
     const skip = (page - 1) * limit;
-    const ads = await ad.find(filter)
+    const ads = await Ad.find(filter)
       .sort({ createDate: -1 })
       .skip(skip)
       .limit(limit)
