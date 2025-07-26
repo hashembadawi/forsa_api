@@ -8,7 +8,7 @@ class AdRepository {
 
   async findByUserId(userId, page, limit) {
     const skip = (page - 1) * limit;
-    const ads = await ad.find({ userId })
+    const ads = await Ad.find({ userId })
       .sort({ createDate: -1 })
       .skip(skip)
       .limit(limit)
