@@ -1,4 +1,4 @@
-const productRepository = require('../../../domain/repositories/adRepository');
+const adRepository = require('../../../domain/repositories/adRepository');
 
 const searchAdsByLocation = async (cityId, regionId, page = 1, limit = 20) => {
   const { ads, total } = await adRepository.findByLocation(cityId, regionId, page, limit);

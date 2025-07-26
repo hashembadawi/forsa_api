@@ -1,4 +1,4 @@
-const productRepository = require('../../../domain/repositories/adRepository');
+const adRepository = require('../../../domain/repositories/adRepository');
 
 const deleteAd = async (adId, userId) => {
   const ad = await adRepository.findById(adId);

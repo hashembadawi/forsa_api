@@ -1,4 +1,4 @@
-const productRepository = require('../../../domain/repositories/adRepository');
+const adRepository = require('../../../domain/repositories/adRepository');
 
 const updateAd = async (adId, userId, updates) => {
   const ad = await adRepository.findById(adId);
