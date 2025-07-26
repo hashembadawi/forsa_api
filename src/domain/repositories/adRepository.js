@@ -71,12 +71,12 @@ class AdRepository {
   async findByTitle(title, page, limit) {
     const regex = new RegExp(title, 'i');
     const skip = (page - 1) * limit;
-    const ads = await Ad.find({ title: regex })
+    const ads = await Ad.find({ adTitle: regex })
       .sort({ createDate: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
-    const total = await Ad.countDocuments({ title: regex });
+    const total = await Ad.countDocuments({ adTitle: regex });
     return { ads, total };
   }
 }
