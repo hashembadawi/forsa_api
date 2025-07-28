@@ -14,6 +14,13 @@ class UserRepository {
     const query = email ? { email } : { phoneNumber };
     return User.findOne(query);
   }
+  async findById(userId) {
+    return await User.findById(userId);
+  }
+
+  async update(userId, updateData) {
+    return await User.findByIdAndUpdate(userId, updateData, { new: true });
+  }
 }
 
 module.exports = new UserRepository();

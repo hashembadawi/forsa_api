@@ -1,6 +1,7 @@
 const { handleServerError } = require('../middleware/errorHandler');
 const registerUser = require('../../application/useCases/user/registerUser');
 const loginUser = require('../../application/useCases/user/loginUser');
+const updateUserName = require('../../application/useCases/user/updateUserName');
 
 const userController = {
   async registerPhone(req, res) {
@@ -17,6 +18,15 @@ const userController = {
     try {
       const { phoneNumber, password } = req.body;
       const result = await loginUser({ phoneNumber, password });
+      res.status(200).json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+  async updateUserName(req, res) {
+    try {
+      const { userId, firstName, lastName } = req.body;
+      const result = await updateUserName(userId, firstName, lastName);
       res.status(200).json(result);
     } catch (err) {
       handleServerError(res, err);
