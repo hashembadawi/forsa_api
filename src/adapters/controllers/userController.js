@@ -25,8 +25,7 @@ const userController = {
   },
   async updateUserName(req, res) {
     try {
-      const { firstName, lastName } = req.body;
-      const userId = req.user.id;
+      const { userId, firstName, lastName } = req.body;
       const result = await updateUserName(userId, firstName, lastName);
       res.status(200).json(result);
     } catch (err) {
