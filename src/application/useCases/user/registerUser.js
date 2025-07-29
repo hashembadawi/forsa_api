@@ -13,7 +13,10 @@ const registerUser = async ({ phoneNumber, firstName, lastName, password , profi
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
-  const accountNumber = `ACC-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  // Generate a unique account number 10 digits long contain current date - random number
+  const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const randomPart = Math.floor(100000 + Math.random() * 900000).toString();
+  const accountNumber = parseInt(`${currentDate}${randomPart}`, 10);
   const userData = {
     phoneNumber,
     firstName,
