@@ -21,6 +21,9 @@ class UserRepository {
   async update(userId, updateData) {
     return await User.findByIdAndUpdate(userId, updateData, { new: true });
   }
+  async delete(userId) {
+    return await User.findByIdAndDelete(userId);
+  }
 }
 
 module.exports = new UserRepository();
