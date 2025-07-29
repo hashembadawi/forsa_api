@@ -10,7 +10,14 @@ const updateUserName = async (userId, firstName, lastName) => {
   }
 
   await userRepository.update(userId, { firstName, lastName });
-  return { message: 'User name updated successfully' };
+  return {
+    userId: user._id,
+    firstName: firstName,
+    lastName: lastName,
+    phoneNumber: user.phoneNumber,
+    profileImage: user.profileImage,
+    accountNumber: user.accountNumber,
+  };
 };
 
 module.exports = updateUserName;

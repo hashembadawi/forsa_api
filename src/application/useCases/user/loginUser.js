@@ -29,6 +29,8 @@ const loginUser = async ({ phoneNumber, password }) => {
     userEmail: user.email,
     userId: user._id,
     userPhone: user.phoneNumber,
+    userProfileImage: user.profileImage,
+    userAccountNumber: user.accountNumber,
   };
 };
 

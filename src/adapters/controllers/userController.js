@@ -6,8 +6,8 @@ const updateUserName = require('../../application/useCases/user/updateUserName')
 const userController = {
   async registerPhone(req, res) {
     try {
-      const { phoneNumber, firstName, lastName, password } = req.body;
-      const result = await registerUser({ phoneNumber, firstName, lastName, password });
+      const { phoneNumber, firstName, lastName, password, profileImage } = req.body;
+      const result = await registerUser({ phoneNumber, firstName, lastName, password, profileImage });
       res.status(201).json(result);
     } catch (err) {
       handleServerError(res, err);
