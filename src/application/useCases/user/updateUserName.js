@@ -1,5 +1,5 @@
 const userRepository = require('../../../domain/repositories/userRepository');
-const updateUserName = async (userId, firstName, lastName) => {
+const updateUserName = async (userId, firstName, lastName, profileImage) => {
   if (!userId || !firstName || !lastName) {
     throw new Error('Missing required fields');
   }
@@ -9,7 +9,7 @@ const updateUserName = async (userId, firstName, lastName) => {
     throw new Error('User not found');
   }
 
-  await userRepository.update(userId, { firstName, lastName });
+  await userRepository.update(userId, { firstName, lastName, profileImage });
   return {
     userId: user._id,
     firstName: firstName,
