@@ -39,7 +39,7 @@ const userController = {
   },
   async deleteUserAccount(req, res) {
     try {
-      const userId = req.user.id;
+      const userId  = req.body.userId;
       const result = await deleteUserAccount(userId);
       res.status(200).json(result);
     } catch (err) {
