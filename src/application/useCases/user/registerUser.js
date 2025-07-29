@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../../../domain/repositories/userRepository');
 
-const registerUser = async ({ phoneNumber, firstName, lastName, password , profilePhoto }) => {
+const registerUser = async ({ phoneNumber, firstName, lastName, password , profileImage }) => {
   if (!phoneNumber || !firstName || !lastName || !password) {
     throw new Error('Missing required fields');
   }
@@ -19,7 +19,7 @@ const registerUser = async ({ phoneNumber, firstName, lastName, password , profi
     firstName,
     lastName,
     password: hashedPassword,
-    profilePhoto,
+    profileImage,
     accountNumber,
     isVerified: false,
     verificationCode,
