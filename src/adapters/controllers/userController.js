@@ -2,6 +2,7 @@ const { handleServerError } = require('../middleware/errorHandler');
 const registerUser = require('../../application/useCases/user/registerUser');
 const loginUser = require('../../application/useCases/user/loginUser');
 const updateUserName = require('../../application/useCases/user/updateUserName');
+const deleteUserAccount = require('../../application/useCases/user/deleteUserAccount');
 
 const userController = {
   async registerPhone(req, res) {
@@ -36,6 +37,15 @@ const userController = {
   validateToken(req, res) {
     res.status(200).json({ valid: true, user: req.user });
   },
+  async deleteUserAccount(req, res) {
+    try {
+      const userId = req.user.id;
+      const result = await deleteUserAccount(userId);
+      res.status(200).json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  }
 };
 
 module.exports = userController;
