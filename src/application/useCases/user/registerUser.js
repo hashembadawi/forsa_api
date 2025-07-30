@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const userRepository = require('../../../domain/repositories/userRepository');
+const sendVerificationWhatsApp = require('./sendVerificationWhatsApp');
 
 const registerUser = async ({ phoneNumber, firstName, lastName, password , profileImage }) => {
   if (!phoneNumber || !firstName || !lastName || !password) {
@@ -29,8 +30,25 @@ const registerUser = async ({ phoneNumber, firstName, lastName, password , profi
   };
 
   await userRepository.create(userData);
-  // await sendVerificationWhatsApp(phoneNumber, verificationCode); // Uncomment if implemented
-  return { message: 'User registered successfully with phone' };
+  
+  // Send verification code via WhatsApp
+  try {
+    await sendVerificationWhatsApp(phoneNumber, verificationCode);
+    return { 
+      message: 'User registered successfully. Verification code sent via WhatsApp.',
+      phoneNumber: phoneNumber,
+      requiresVerification: true
+    };
+  } catch (whatsappError) {
+    console.error('Failed to send WhatsApp verification:', whatsappError);
+    // User is still created, but verification failed
+    return { 
+      message: 'User registered successfully, but failed to send verification code. Please try resending.',
+      phoneNumber: phoneNumber,
+      requiresVerification: true,
+      verificationError: true
+    };
+  }
 };
 
 module.exports = registerUser;

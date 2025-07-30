@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.6.0",
@@ -19,6 +20,7 @@
     "mongose": "^0.0.2-security",
     "multer": "^2.0.1",
     "nodemailer": "^7.0.5",
+    "qrcode-terminal": "^0.12.0",
     "twilio": "^5.7.3"
   }
 }
