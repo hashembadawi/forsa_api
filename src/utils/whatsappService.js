@@ -39,14 +39,23 @@ class WhatsAppService {
         }
 
         if (connection === 'close') {
-          const shouldReconnect = 
-            lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut;
+          const statusCode = lastDisconnect?.error?.output?.statusCode;
+          const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
           
           console.log('Connection closed due to:', lastDisconnect?.error);
+          console.log('Status code:', statusCode);
           
-          if (shouldReconnect) {
+          if (statusCode === DisconnectReason.badSession || 
+              statusCode === DisconnectReason.restartRequired ||
+              statusCode === 401) {
+            console.log('Session expired or invalid. Clearing auth and requiring new QR scan...');
+            this.isConnected = false;
+            this.qrCodeGenerated = false;
+            // Clear the auth folder and restart
+            setTimeout(() => this.clearAuthAndRestart(), 2000);
+          } else if (shouldReconnect) {
             console.log('Reconnecting to WhatsApp...');
-            this.initialize();
+            setTimeout(() => this.initialize(), 5000);
           } else {
             console.log('WhatsApp logged out. Please restart and scan QR again.');
             this.isConnected = false;
@@ -77,11 +86,11 @@ class WhatsAppService {
 
   async sendMessage(phoneNumber, message) {
     if (!this.isConnected || !this.sock) {
-      throw new Error('WhatsApp service is not connected');
+      throw new Error('WhatsApp service is not connected. Please wait for connection or scan QR code.');
     }
 
     try {
-      // Format phone number for WhatsApp (add country code if needed)
+      // Use phone number as-is
       const formattedNumber = this.formatPhoneNumber(phoneNumber);
       const jid = `${formattedNumber}@s.whatsapp.net`;
 
@@ -90,6 +99,14 @@ class WhatsAppService {
       return result;
     } catch (error) {
       console.error('Error sending WhatsApp message:', error);
+      
+      // If it's a connection error, try to reinitialize
+      if (error.message.includes('Connection') || error.output?.statusCode === 401) {
+        console.log('Connection lost, attempting to reinitialize...');
+        this.isConnected = false;
+        this.clearAuthAndRestart();
+      }
+      
       throw error;
     }
   }
@@ -119,6 +136,30 @@ class WhatsAppService {
     if (this.sock) {
       await this.sock.logout();
       this.isConnected = false;
+    }
+  }
+
+  async clearAuthAndRestart() {
+    try {
+      const fs = require('fs');
+      const authPath = path.join(__dirname, '../../auth_info_baileys');
+      
+      // Remove auth folder if it exists
+      if (fs.existsSync(authPath)) {
+        fs.rmSync(authPath, { recursive: true, force: true });
+        console.log('Cleared old authentication data.');
+      }
+      
+      // Reset state
+      this.sock = null;
+      this.isConnected = false;
+      this.qrCodeGenerated = false;
+      
+      // Restart initialization
+      console.log('Restarting WhatsApp service...');
+      await this.initialize();
+    } catch (error) {
+      console.error('Error clearing auth and restarting:', error);
     }
   }
 }
