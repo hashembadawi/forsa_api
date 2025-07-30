@@ -3,6 +3,8 @@ const registerUser = require('../../application/useCases/user/registerUser');
 const loginUser = require('../../application/useCases/user/loginUser');
 const updateUserName = require('../../application/useCases/user/updateUserName');
 const deleteUserAccount = require('../../application/useCases/user/deleteUserAccount');
+const sendVerificationWhatsApp = require('../../application/useCases/user/sendVerificationWhatsApp');
+const verifyUser = require('../../application/useCases/user/verifyUser');
 
 const userController = {
   async registerPhone(req, res) {
@@ -41,6 +43,53 @@ const userController = {
     try {
       const userId  = req.body.userId;
       const result = await deleteUserAccount(userId);
+      res.status(200).json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+
+  async sendVerificationCode(req, res) {
+    try {
+      const { phoneNumber } = req.body;
+      if (!phoneNumber) {
+        return res.status(400).json({ error: 'Phone number is required' });
+      }
+      
+      // Get user's verification code from database
+      const userRepository = require('../../domain/repositories/userRepository');
+      const user = await userRepository.findByPhoneNumber(phoneNumber);
+      
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      if (user.isVerified) {
+        return res.status(400).json({ error: 'User is already verified' });
+      }
+      
+      if (!user.verificationCode) {
+        // Generate new verification code if doesn't exist
+        const newCode = Math.floor(1000 + Math.random() * 9000).toString();
+        await userRepository.update(user._id, { verificationCode: newCode });
+        user.verificationCode = newCode;
+      }
+      
+      const result = await sendVerificationWhatsApp(phoneNumber, user.verificationCode);
+      res.status(200).json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+
+  async verifyPhoneNumber(req, res) {
+    try {
+      const { phoneNumber, verificationCode } = req.body;
+      if (!phoneNumber || !verificationCode) {
+        return res.status(400).json({ error: 'Phone number and verification code are required' });
+      }
+      
+      const result = await verifyUser(phoneNumber, verificationCode);
       res.status(200).json(result);
     } catch (err) {
       handleServerError(res, err);
