@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const connectDB = require('./src/adapters/database/mongoose');
 const userRoutes = require('./src/adapters/routes/userRoutes');
 const adRoutes = require('./src/adapters/routes/AdRoutes');
+const managerRoutes = require('./src/adapters/routes/managerRoutes');
 const optionsRoutes = require('./src/adapters/routes/optionsRoutes');
 const WhatsAppInitializer = require('./src/services/whatsappInitializer');
 
@@ -25,6 +26,7 @@ WhatsAppInitializer.initialize().catch(console.error);
 app.use('/api/user', userRoutes);
 app.use('/api/ads', adRoutes);
 app.use('/api/options', optionsRoutes);
+app.use('/api/manager', managerRoutes);
 
 // Server Start
 const PORT = process.env.PORT || 10000;

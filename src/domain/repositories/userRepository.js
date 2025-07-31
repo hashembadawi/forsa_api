@@ -24,6 +24,9 @@ class UserRepository {
   async delete(userId) {
     return await User.findByIdAndDelete(userId);
   }
+  async countUsers() {
+    return await User.countDocuments();
+  }
 }
 
 module.exports = new UserRepository();

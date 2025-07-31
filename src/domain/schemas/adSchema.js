@@ -24,6 +24,7 @@ const adSchema = new mongoose.Schema({
   regionName: { type: String, required: true },
   createDate: { type: Date, required: true },
   description: { type: String, required: true },
+  isApproved: { type: Boolean, default: false }
 });
 
 adSchema.index({ adTitle: 1, userId: 1 }, { unique: true });

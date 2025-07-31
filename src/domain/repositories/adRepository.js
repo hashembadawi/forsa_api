@@ -79,6 +79,14 @@ class AdRepository {
     const total = await Ad.countDocuments({ adTitle: regex });
     return { ads, total };
   }
+
+  async countNotApprovedAds() {
+    return await Ad.countDocuments({ isApproved: false });
+  }
+  
+  async countApprovedAds() {
+    return await Ad.countDocuments({ isApproved: true });
+  }
 }
 
 module.exports = new AdRepository();
