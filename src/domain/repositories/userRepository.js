@@ -27,6 +27,10 @@ class UserRepository {
   async countUsers() {
     return await User.countDocuments();
   }
+  async findAll({ page = 1, limit = 200 }) {
+    const skip = (page - 1) * limit;
+    return await User.find().skip(skip).limit(limit);
+  }
 }
 
 module.exports = new UserRepository();
