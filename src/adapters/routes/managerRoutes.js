@@ -7,6 +7,7 @@ const authenticateToken = require('../middleware/authenticateToken');
 router.get('/dashboard-data', authenticateToken, managerController.dashboardData);
 router.get('/users-list', authenticateToken, managerController.usersList);
 router.get('/notApproved-ads', authenticateToken, managerController.notApprovedAds);
+router.put('/approve-ad/:id', authenticateToken, managerController.approveAd);
 
 
 module.exports = router;
