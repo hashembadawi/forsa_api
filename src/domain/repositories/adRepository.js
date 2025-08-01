@@ -31,12 +31,13 @@ class AdRepository {
 
   async findAll(page, limit) {
     const skip = (page - 1) * limit;
-    const ads = await Ad.find()
+    //find where isApproved is true
+    const ads = await Ad.find({ isApproved: true })
       .sort({ createDate: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
-    const total = await Ad.countDocuments();
+    const total = await Ad.countDocuments({ isApproved: true });
     return { ads, total };
   }
 
