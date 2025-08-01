@@ -2,6 +2,7 @@ const getDashboardData = require('../../application/useCases/manager/getDashboar
 const getUsersList = require('../../application/useCases/manager/getUsersList');
 const getNotApprovedAds = require('../../application/useCases/manager/getNotApprovedAds');
 const approveAd = require('../../application/useCases/manager/approveAd');
+const rejectAd = require('../../application/useCases/manager/rejectAd');
 const managerController = {
   async dashboardData(req, res) {
     try {
@@ -32,6 +33,15 @@ const managerController = {
     try {
       const adId = req.params.id;
       const result = await approveAd(adId);
+      res.status(200).json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+  async rejectAd(req, res) {
+    try {
+      const adId = req.params.id;
+      const result = await rejectAd(adId);
       res.status(200).json(result);
     } catch (err) {
       handleServerError(res, err);
