@@ -87,6 +87,13 @@ class AdRepository {
   async countApprovedAds() {
     return await Ad.countDocuments({ isApproved: true });
   }
+  async findNotApprovedAds({ skip = 0, limit = 200 }) {
+    return await Ad.find({ isApproved: false })
+      .sort({ createDate: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+  }
 }
 
 module.exports = new AdRepository();

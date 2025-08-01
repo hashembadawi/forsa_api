@@ -1,5 +1,6 @@
 const getDashboardData = require('../../application/useCases/manager/getDashboardData');
 const getUsersList = require('../../application/useCases/manager/getUsersList');
+const getNotApprovedAds = require('../../application/useCases/manager/getNotApprovedAds');
 const managerController = {
   async dashboardData(req, res) {
     try {
@@ -12,6 +13,15 @@ const managerController = {
     try {
       const { page = 1, limit = 200 } = req.query;
       const result = await getUsersList(page, limit);
+      res.status(200).json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+  async notApprovedAds(req, res) {
+    try {
+      const { page = 1, limit = 200 } = req.query;
+      const result = await getNotApprovedAds(page, limit);
       res.status(200).json(result);
     } catch (err) {
       handleServerError(res, err);
