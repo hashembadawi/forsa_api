@@ -45,6 +45,7 @@ class AdRepository {
     const filter = {};
     if (cityId) filter.cityId = Number(cityId);
     if (regionId) filter.regionId = Number(regionId);
+    filter.isApproved = true;
     const skip = (page - 1) * limit;
     const ads = await Ad.find(filter)
       .sort({ createDate: -1 })
@@ -59,6 +60,7 @@ class AdRepository {
     const filter = {};
     if (categoryId) filter.categoryId = Number(categoryId);
     if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
+    filter.isApproved = true;
     const skip = (page - 1) * limit;
     const ads = await Ad.find(filter)
       .sort({ createDate: -1 })
@@ -72,12 +74,14 @@ class AdRepository {
   async findByTitle(title, page, limit) {
     const regex = new RegExp(title, 'i');
     const skip = (page - 1) * limit;
-    const ads = await Ad.find({ adTitle: regex })
+    const filter = { isApproved: true };
+    if (title) filter.adTitle = regex;
+    const ads = await Ad.find(filter)
       .sort({ createDate: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
-    const total = await Ad.countDocuments({ adTitle: regex });
+    const total = await Ad.countDocuments(filter);
     return { ads, total };
   }
 
