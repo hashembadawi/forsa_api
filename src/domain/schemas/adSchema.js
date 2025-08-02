@@ -24,7 +24,11 @@ const adSchema = new mongoose.Schema({
   regionName: { type: String, required: true },
   createDate: { type: Date, required: true },
   description: { type: String, required: true },
-  isApproved: { type: Boolean, default: false }
+  isApproved: { type: Boolean, default: false },
+  location: {
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], default: [0, 0] }
+  }
 });
 
 adSchema.index({ adTitle: 1, userId: 1 }, { unique: true });
