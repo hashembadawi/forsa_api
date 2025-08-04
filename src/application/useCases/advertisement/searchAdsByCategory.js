@@ -6,7 +6,15 @@ const searchAdsByCategory = async (categoryId, subCategoryId, page = 1, limit = 
     ...p,
     images: [p.pic1, p.pic2, p.pic3, p.pic4, p.pic5, p.pic6].filter(Boolean),
   }));
-
+  //remove pic1, pic2, pic3, pic4, pic5, pic6 from mappedAds
+  mappedAds.forEach(ad => {
+    delete ad.pic1;
+    delete ad.pic2;
+    delete ad.pic3;
+    delete ad.pic4;
+    delete ad.pic5;
+    delete ad.pic6;
+  });
   return {
     total,
     page: parseInt(page),
