@@ -10,17 +10,18 @@ const getUserFavoriteAds = async (userId, page = 1, limit = 10) => {
       addedDate: favorite.addedDate,
       ad: {
         ...favorite.adId,
-        images: [
-          favorite.adId.pic1,
-          favorite.adId.pic2,
-          favorite.adId.pic3,
-          favorite.adId.pic4,
-          favorite.adId.pic5,
-          favorite.adId.pic6
-        ].filter(Boolean)
+        images: [favorite.adId.pic1, favorite.adId.pic2, favorite.adId.pic3, favorite.adId.pic4, favorite.adId.pic5, favorite.adId.pic6].filter(Boolean)
       }
     }));
-
+    //remove the pic1, pic2, pic3, pic4, pic5, pic6 from mappedFavorites
+    mappedFavorites.forEach(fav => {
+      delete fav.ad.pic1;
+      delete fav.ad.pic2;
+      delete fav.ad.pic3;
+      delete fav.ad.pic4;
+      delete fav.ad.pic5;
+      delete fav.ad.pic6;
+    });
     return {
       total,
       page: parseInt(page),

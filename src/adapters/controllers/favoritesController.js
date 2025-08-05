@@ -6,11 +6,10 @@ const getUserFavoriteAds = require('../../application/useCases/favorites/getUser
 const favoritesController = {
   async addFavorite(req, res) {
     try {
-      const { adId } = req.body;
-      const userId = req.user.userId;
-      
-      if (!adId) {
-        return res.status(400).json({ error: 'Ad ID is required' });
+      const { adId, userId } = req.body;
+
+      if (!adId || !userId) {
+        return res.status(400).json({ error: 'Ad ID and User ID are required' });
       }
 
       const result = await addFavoriteAd(userId, adId);
@@ -34,7 +33,7 @@ const favoritesController = {
 
   async getUserFavorites(req, res) {
     try {
-      const userId = req.user.userId;
+      const { userId } = req.body;
       const { page, limit } = req.query;
 
       const result = await getUserFavoriteAds(userId, page, limit);
