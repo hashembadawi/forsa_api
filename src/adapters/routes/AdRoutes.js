@@ -5,6 +5,7 @@ const authenticateToken = require('../middleware/authenticateToken');
 
 router.post('/userAds/add', authenticateToken, adController.addAd);
 router.get('/userAds/:userId', authenticateToken, adController.getUserAds);
+router.get('/advertiser/:userId', authenticateToken, adController.getAdvertiserInfo);
 router.delete('/userAds/:id', authenticateToken, adController.deleteAd);
 router.put('/userAds/update/:id', authenticateToken, adController.updateAd);
 router.get('/', adController.getAllAds);

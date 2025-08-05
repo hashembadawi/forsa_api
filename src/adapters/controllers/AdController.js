@@ -7,6 +7,7 @@ const getAllAds = require('../../application/useCases/advertisement/getAllAds');
 const searchAdsByLocation = require('../../application/useCases/advertisement/searchAdsByLocation');
 const searchAdsByCategory = require('../../application/useCases/advertisement/searchAdsByCategory');
 const searchAdsByTitle = require('../../application/useCases/advertisement/searchAdsByTitle');
+const getAdvertiserInfo = require('../../application/useCases/advertisement/getUserAds'); // Reusing getUserAds for advertiser info
 
 const adController = {
   async addAd(req, res) {
@@ -91,6 +92,18 @@ const adController = {
     try {
       const { title, page, limit } = req.query;
       const result = await searchAdsByTitle(title, page, limit);
+      res.json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+  async getAdvertiserInfo(req, res) {
+    try {
+      const { userId } = req.params;
+      if (userId !== req.user.userId) {
+        return res.status(403).json({ message: 'Unauthorized access' });
+      }
+      const result = await getAdvertiserInfo(userId);
       res.json(result);
     } catch (err) {
       handleServerError(res, err);
