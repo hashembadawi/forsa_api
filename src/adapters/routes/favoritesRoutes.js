@@ -7,7 +7,7 @@ const authenticateToken = require('../middleware/authenticateToken');
 router.post('/add', authenticateToken, favoritesController.addFavorite);
 
 // Remove ad from favorites
-router.delete('/remove/:adId', authenticateToken, favoritesController.removeFavorite);
+router.delete('/delete', authenticateToken, favoritesController.removeFavorite);
 
 // Get user's favorite ads
 router.get('/my-favorites', authenticateToken, favoritesController.getUserFavorites);

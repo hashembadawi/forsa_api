@@ -22,8 +22,7 @@ const favoritesController = {
 
   async removeFavorite(req, res) {
     try {
-      const { adId } = req.params;
-      const userId = req.user.userId;
+      const { userId, adId } = req.body;
 
       const result = await removeFavoriteAd(userId, adId);
       res.status(200).json(result);
