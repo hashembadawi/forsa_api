@@ -100,9 +100,6 @@ const adController = {
   async getAdvertiserInfo(req, res) {
     try {
       const { userId } = req.params;
-      if (userId !== req.user.userId) {
-        return res.status(403).json({ message: 'Unauthorized access' });
-      }
       const result = await getAdvertiserInfo(userId);
       res.json(result);
     } catch (err) {
