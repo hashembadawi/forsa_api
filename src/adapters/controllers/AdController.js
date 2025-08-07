@@ -7,7 +7,8 @@ const getAllAds = require('../../application/useCases/advertisement/getAllAds');
 const searchAdsByLocation = require('../../application/useCases/advertisement/searchAdsByLocation');
 const searchAdsByCategory = require('../../application/useCases/advertisement/searchAdsByCategory');
 const searchAdsByTitle = require('../../application/useCases/advertisement/searchAdsByTitle');
-const getAdvertiserInfo = require('../../application/useCases/advertisement/getUserAds'); // Reusing getUserAds for advertiser info
+const getAdvertiserInfo = require('../../application/useCases/advertisement/getUserAds'); 
+const getAdById = require('../../application/useCases/advertisement/getAdById');
 
 const adController = {
   async addAd(req, res) {
@@ -101,6 +102,18 @@ const adController = {
     try {
       const { userId } = req.params;
       const result = await getAdvertiserInfo(userId);
+      res.json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+  async getAdById(req, res) {
+    try {
+      const { adId } = req.params;
+      const result = await getAdById(adId);
+      if (!result) {
+        return res.status(404).json({ message: 'Ad not found' });
+      }
       res.json(result);
     } catch (err) {
       handleServerError(res, err);
