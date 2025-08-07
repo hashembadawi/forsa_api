@@ -8,6 +8,7 @@ const adRoutes = require('./src/adapters/routes/AdRoutes');
 const managerRoutes = require('./src/adapters/routes/managerRoutes');
 const optionsRoutes = require('./src/adapters/routes/optionsRoutes');
 const favoritesRoutes = require('./src/adapters/routes/favoritesRoutes');
+const reportsRoutes = require('./src/adapters/routes/reportsRoutes');
 const WhatsAppInitializer = require('./src/services/whatsappInitializer');
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/ads', adRoutes);
 app.use('/api/options', optionsRoutes);
 app.use('/api/manager', managerRoutes);
 app.use('/api/favorites', favoritesRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // Server Start
 const PORT = process.env.PORT || 10000;
