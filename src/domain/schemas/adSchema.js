@@ -25,6 +25,10 @@ const adSchema = new mongoose.Schema({
   createDate: { type: Date, required: true },
   description: { type: String, required: true },
   isApproved: { type: Boolean, default: false },
+  isNew: { type: Boolean, default: true },
+  forSale: { type: Boolean, default: true },
+  deliveryService: { type: Boolean, default: false },
+  isSpecial: { type: Boolean, default: false },
   location: {
     type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: { type: [Number], default: [0, 0] }

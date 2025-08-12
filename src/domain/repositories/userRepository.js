@@ -31,6 +31,11 @@ class UserRepository {
     const skip = (page - 1) * limit;
     return await User.find().skip(skip).limit(limit);
   }
+  async updateStatus(userId, isSpecial) {
+    // Update the user's isSpecial status
+    return await User.findByIdAndUpdate(userId, { isSpecial });
+  }
+
 }
 
 module.exports = new UserRepository();

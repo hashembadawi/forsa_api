@@ -4,7 +4,7 @@ const addAd = async (adData, userId) => {
   const requiredFields = [
     'userId', 'userPhone', 'userName', 'adTitle', 'price', 'currencyId',
     'currencyName', 'categoryId', 'categoryName', 'subCategoryId', 'subCategoryName',
-    'cityId', 'cityName', 'regionId', 'regionName', 'description', 'images',
+    'cityId', 'cityName', 'regionId', 'regionName', 'images'
   ];
 
   const missingFields = requiredFields.filter(field => !adData[field]);

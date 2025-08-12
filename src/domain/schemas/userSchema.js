@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   isAdmin: { type: Boolean, default: false },
   isVerified: { type: Boolean, default: false },
   verificationCode: String,
+  isSpecial: { type: Boolean, default: false }
 });
 const User = mongoose.model('User', userSchema);
 module.exports = User;

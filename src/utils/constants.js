@@ -2,7 +2,10 @@ const currencies = [
     { id: 1, name: '$' },
     { id: 2, name: '€' },
     { id: 3, name: 'ل.س' },
-    { id: 4, name: 'ل.ت' }
+    { id: 4, name: 'ل.ت' },
+    { id: 5, name: 'حسب الحجم' },
+    { id: 6, name: 'حسب الوزن' },
+    { id: 7, name: 'حسب الكمية' }
 ];
 
 const categories = [

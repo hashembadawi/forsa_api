@@ -9,6 +9,7 @@ router.get('/users-list', authenticateToken, managerController.usersList);
 router.get('/notApproved-ads', authenticateToken, managerController.notApprovedAds);
 router.put('/approve-ad/:id', authenticateToken, managerController.approveAd);
 router.delete('/reject-ad/:id', authenticateToken, managerController.rejectAd);
+router.post('/update-user', authenticateToken, managerController.updateUser);
 
 
 module.exports = router;
