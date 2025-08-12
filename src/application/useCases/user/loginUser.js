@@ -32,7 +32,8 @@ const loginUser = async ({ phoneNumber, password }) => {
     userProfileImage: user.profileImage,
     userAccountNumber: user.accountNumber,
     userIsVerified: user.isVerified,
-    userIsAdmin: user.isAdmin
+    userIsAdmin: user.isAdmin,
+    userIsSpecial: user.isSpecial
   };
 };
 
