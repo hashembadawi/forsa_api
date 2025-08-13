@@ -31,9 +31,9 @@ class AdRepository {
 
   async findAll(page, limit) {
     const skip = (page - 1) * limit;
-    //find where isApproved is true
+    // Find where isApproved is true and order by isSpecial first, then createDate descending
     const ads = await Ad.find({ isApproved: true })
-      .sort({ createDate: -1 })
+      .sort({ isSpecial: -1, createDate: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
