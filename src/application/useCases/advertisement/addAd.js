@@ -15,7 +15,7 @@ const addAd = async (adData, userId) => {
   if (adData.images.length === 0) {
     throw new Error('At least one image is required');
   }
-
+   
   const data = {
     ...adData,
     userId,
@@ -30,6 +30,16 @@ const addAd = async (adData, userId) => {
 
   try {
     await adRepository.create(data);
+    // Send WhatsApp notification to admin number
+    const sendVerificationWhatsApp = require('../../useCases/user/sendVerificationWhatsApp');
+    const adminPhone = '905510300730';
+    const notificationMessage = `User ${adData.userName} (${adData.userPhone}) added a new advertisement: ${adData.adTitle}`;
+    try {
+      await sendVerificationWhatsApp(adminPhone, notificationMessage);
+    } catch (whatsappError) {
+      console.error('Failed to send WhatsApp notification to admin:', whatsappError);
+      // Continue even if notification fails
+    }
     return { message: 'Advertisement added successfully' };
   } catch (err) {
     if (err.code === 11000) {
