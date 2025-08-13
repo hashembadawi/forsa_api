@@ -45,13 +45,15 @@ const adController = {
 
   async updateAd(req, res) {
     try {
-      const { adTitle, price, currencyId, currencyName, description } = req.body;
+      const { adTitle, price, currencyId, currencyName, description, forSale, deliveryService } = req.body;
       const result = await updateAd(req.params.id, req.user.userId, {
         adTitle,
         price,
         currencyId,
         currencyName,
         description,
+        forSale,
+        deliveryService
       });
       res.json(result);
     } catch (err) {
