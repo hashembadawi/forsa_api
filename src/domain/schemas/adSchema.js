@@ -11,7 +11,7 @@ const adSchema = new mongoose.Schema({
   pic4: { type: String },
   pic5: { type: String },
   pic6: { type: String },
-  price: { type: String, required: true },
+  price: { type: Number, required: true },
   currencyId: { type: Number, required: true },
   currencyName: { type: String, required: true },
   categoryId: { type: Number, required: true },

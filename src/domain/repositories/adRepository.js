@@ -56,11 +56,25 @@ class AdRepository {
     return { ads, total };
   }
 
-  async findByCategory(categoryId, subCategoryId, page, limit) {
+  async findAdvance(categoryId, subCategoryId, page, limit) {
+    const {
+      forSale,
+      deliveryService,
+      priceMin,
+      priceMax
+    } = arguments[4] || {};
     const filter = {};
     if (categoryId) filter.categoryId = Number(categoryId);
     if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
     filter.isApproved = true;
+    filter.forSale = forSale;
+    filter.deliveryService = deliveryService;
+    // If priceMin and priceMax are both 0, do not filter by price
+    if (!(Number(priceMin) === 0 && Number(priceMax) === 0)) {
+      filter.price = {};
+      if (typeof priceMin !== 'undefined' && priceMin !== '' && priceMin !== null) filter.price.$gte = Number(priceMin);
+      if (typeof priceMax !== 'undefined' && priceMax !== '' && priceMax !== null) filter.price.$lte = Number(priceMax);
+    }
     const skip = (page - 1) * limit;
     const ads = await Ad.find(filter)
       .sort({ createDate: -1 })

@@ -5,7 +5,7 @@ const deleteAd = require('../../application/useCases/advertisement/deleteAd');
 const updateAd = require('../../application/useCases/advertisement/updateAd');
 const getAllAds = require('../../application/useCases/advertisement/getAllAds');
 const searchAdsByLocation = require('../../application/useCases/advertisement/searchAdsByLocation');
-const searchAdsByCategory = require('../../application/useCases/advertisement/searchAdsByCategory');
+const searchAdvance = require('../../application/useCases/advertisement/searchAdvance');
 const searchAdsByTitle = require('../../application/useCases/advertisement/searchAdsByTitle');
 const getAdvertiserInfo = require('../../application/useCases/advertisement/getUserAds'); 
 const getAdById = require('../../application/useCases/advertisement/getAdById');
@@ -81,10 +81,31 @@ const adController = {
     }
   },
 
-  async searchAdsByCategory(req, res) {
+  async searchAdvance(req, res) {
     try {
-      const { categoryId, subCategoryId, page, limit } = req.query;
-      const result = await searchAdsByCategory(categoryId, subCategoryId, page, limit);
+      const {
+        categoryId,
+        subCategoryId,
+        page,
+        limit,
+        forSale,
+        deliveryService,
+        priceMin,
+        priceMax
+      } = req.query;
+      const filters = {
+        forSale,
+        deliveryService,
+        priceMin,
+        priceMax
+      };
+      const result = await searchAdvance(
+        categoryId,
+        subCategoryId,
+        page,
+        limit,
+        filters
+      );
       res.json(result);
     } catch (err) {
       handleServerError(res, err);

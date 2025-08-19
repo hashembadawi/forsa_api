@@ -10,7 +10,7 @@ router.delete('/userAds/:id', authenticateToken, adController.deleteAd);
 router.put('/userAds/update/:id', authenticateToken, adController.updateAd);
 router.get('/', adController.getAllAds);
 router.get('/search', adController.searchAdsByLocation);
-router.get('/search-by-category', adController.searchAdsByCategory);
+router.get('/search-advance', adController.searchAdvance);
 router.get('/search-by-title', adController.searchAdsByTitle);
 router.get('/getAdById/:adId', adController.getAdById);
 
