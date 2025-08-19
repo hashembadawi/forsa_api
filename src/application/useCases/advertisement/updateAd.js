@@ -12,7 +12,7 @@ const updateAd = async (adId, userId, updates) => {
 
   const updateData = {
     adTitle: updates.adTitle || ad.adTitle,
-    price: updates.price || ad.price,
+    price: updates.price !== undefined ? parseFloat(updates.price) : ad.price,
     currencyId: updates.currencyId || ad.currencyId,
     currencyName: updates.currencyName || ad.currencyName,
     forSale: updates.forSale !== undefined ? updates.forSale : ad.forSale,

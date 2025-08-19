@@ -13,6 +13,9 @@ const getAdById = require('../../application/useCases/advertisement/getAdById');
 const adController = {
   async addAd(req, res) {
     try {
+      if (req.body && req.body.price !== undefined) {
+        req.body.price = parseFloat(req.body.price);
+      }
       const result = await addAd(req.body, req.user.userId);
       res.status(201).json(result);
     } catch (err) {
@@ -48,7 +51,7 @@ const adController = {
       const { adTitle, price, currencyId, currencyName, description, forSale, deliveryService } = req.body;
       const result = await updateAd(req.params.id, req.user.userId, {
         adTitle,
-        price,
+        price: price !== undefined ? parseFloat(price) : price,
         currencyId,
         currencyName,
         description,

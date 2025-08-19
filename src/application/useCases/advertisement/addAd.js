@@ -18,6 +18,7 @@ const addAd = async (adData, userId) => {
    
   const data = {
     ...adData,
+    price: adData.price !== undefined ? parseFloat(adData.price) : adData.price,
     userId,
     createDate: new Date(),
     pic1: adData.images[0],
