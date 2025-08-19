@@ -8,6 +8,10 @@ const searchAdvance = async (
   limit = 20,
   filters = {}
 ) => {
+  // Ensure currencyId is passed as a number if present
+  if (filters && filters.currencyId !== undefined && filters.currencyId !== null && filters.currencyId !== '') {
+    filters.currencyId = Number(filters.currencyId);
+  }
   const { ads, total } = await adRepository.findAdvance(
     categoryId,
     subCategoryId,

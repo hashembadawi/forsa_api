@@ -94,13 +94,15 @@ const adController = {
         forSale,
         deliveryService,
         priceMin,
-        priceMax
+        priceMax,
+        currencyId
       } = req.query;
       const filters = {
         forSale,
         deliveryService,
         priceMin,
-        priceMax
+        priceMax,
+        currencyId
       };
       const result = await searchAdvance(
         categoryId,

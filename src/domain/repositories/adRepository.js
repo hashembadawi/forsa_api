@@ -61,14 +61,25 @@ class AdRepository {
       forSale,
       deliveryService,
       priceMin,
-      priceMax
+      priceMax,
+      currencyId
     } = arguments[4] || {};
+    // All values are required and must be sent (not undefined, null, or empty string)
+    if (
+      forSale === undefined || forSale === null || forSale === '' ||
+      deliveryService === undefined || deliveryService === null || deliveryService === '' ||
+      priceMin === undefined || priceMin === null || priceMin === '' ||
+      priceMax === undefined || priceMax === null || priceMax === ''
+    ) {
+      throw new Error('forSale, deliveryService, priceMin, and priceMax must be sent');
+    }
     const filter = {};
     if (categoryId) filter.categoryId = Number(categoryId);
     if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
+    if (currencyId !== undefined && currencyId !== null && currencyId !== '') filter.currencyId = Number(currencyId);
     filter.isApproved = true;
-    filter.forSale = forSale;
-    filter.deliveryService = deliveryService;
+    filter.forSale = forSale === 'true' || forSale === true;
+    filter.deliveryService = deliveryService === 'true' || deliveryService === true;
     // If priceMin and priceMax are both 0, do not filter by price
     if (!(Number(priceMin) === 0 && Number(priceMax) === 0)) {
       filter.price = {};
@@ -76,20 +87,6 @@ class AdRepository {
       if (typeof priceMax !== 'undefined' && priceMax !== '' && priceMax !== null) filter.price.$lte = Number(priceMax);
     }
     const skip = (page - 1) * limit;
-    const ads = await Ad.find(filter)
-      .sort({ createDate: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-    const total = await Ad.countDocuments(filter);
-    return { ads, total };
-  }
-
-  async findByTitle(title, page, limit) {
-    const regex = new RegExp(title, 'i');
-    const skip = (page - 1) * limit;
-    const filter = { isApproved: true };
-    if (title) filter.adTitle = regex;
     const ads = await Ad.find(filter)
       .sort({ createDate: -1 })
       .skip(skip)
