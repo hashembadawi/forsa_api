@@ -12,6 +12,7 @@ router.get('/', adController.getAllAds);
 router.get('/search', adController.searchAdsByLocation);
 router.get('/search-advance', adController.searchAdvance);
 router.get('/search-by-title', adController.searchAdsByTitle);
+router.get('/search-by-category', adController.searchAdsByCategory);
 router.get('/getAdById/:adId', adController.getAdById);
 
 module.exports = router;

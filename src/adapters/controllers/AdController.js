@@ -9,6 +9,7 @@ const searchAdvance = require('../../application/useCases/advertisement/searchAd
 const searchAdsByTitle = require('../../application/useCases/advertisement/searchAdsByTitle');
 const getAdvertiserInfo = require('../../application/useCases/advertisement/getUserAds'); 
 const getAdById = require('../../application/useCases/advertisement/getAdById');
+const searchAdsByCategory = require('../../application/useCases/advertisement/searchAdsByCategory');
 
 const adController = {
   async addAd(req, res) {
@@ -147,6 +148,15 @@ const adController = {
       handleServerError(res, err);
     }
   },
+  async searchAdsByCategory(req, res) {
+    try {
+      const { categoryId, page, limit } = req.query;
+      const result = await searchAdsByCategory(categoryId, page, limit);
+      res.json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  }
 };
 
 module.exports = adController;

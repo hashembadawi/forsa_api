@@ -122,6 +122,18 @@ class AdRepository {
     const total = await Ad.countDocuments({ adTitle: regex, isApproved: true });
     return { ads, total };
   }
+
+  //findByCategoryId
+  async findByCategoryId(categoryId, page, limit) {
+    const skip = (page - 1) * limit;
+    const ads = await Ad.find({ categoryId: Number(categoryId), isApproved: true })
+      .sort({ createDate: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+    const total = await Ad.countDocuments({ categoryId: Number(categoryId), isApproved: true });
+    return { ads, total };
+  }
 }
 
 module.exports = new AdRepository();
