@@ -110,6 +110,18 @@ class AdRepository {
       .limit(limit)
       .lean();
   }
+
+  async findByTitle(title, page, limit) {
+    const skip = (page - 1) * limit;
+    const regex = new RegExp(title, 'i'); // Case-insensitive search
+    const ads = await Ad.find({ adTitle: regex, isApproved: true })
+      .sort({ createDate: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+    const total = await Ad.countDocuments({ adTitle: regex, isApproved: true });
+    return { ads, total };
+  }
 }
 
 module.exports = new AdRepository();
