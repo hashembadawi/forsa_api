@@ -10,5 +10,6 @@ router.put('/update-info', authenticateToken, userController.updateUserName);
 router.delete('/delete-account', authenticateToken, userController.deleteUserAccount);
 router.post('/send-verification', userController.sendVerificationCode);
 router.post('/verify-phone', userController.verifyPhoneNumber);
+router.get('/most-active', userController.getMostActiveUsers);
 
 module.exports = router;

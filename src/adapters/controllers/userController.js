@@ -1,3 +1,4 @@
+const getMostActiveUsersUseCase = require('../../application/useCases/user/getMostActiveUsers');
 const { handleServerError } = require('../middleware/errorHandler');
 const registerUser = require('../../application/useCases/user/registerUser');
 const loginUser = require('../../application/useCases/user/loginUser');
@@ -7,6 +8,15 @@ const sendVerificationWhatsApp = require('../../application/useCases/user/sendVe
 const verifyUser = require('../../application/useCases/user/verifyUser');
 
 const userController = {
+  async getMostActiveUsers(req, res) {
+    try {
+      const limit = parseInt(req.query.limit) || 10;
+      const users = await getMostActiveUsersUseCase(limit);
+      res.status(200).json(users);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
   async registerPhone(req, res) {
     try {
       const { phoneNumber, firstName, lastName, password, profileImage } = req.body;
