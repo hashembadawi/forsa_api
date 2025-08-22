@@ -57,34 +57,41 @@ class AdRepository {
   }
 
   async findAdvance(categoryId, subCategoryId, page, limit) {
-    const {
-      forSale,
-      deliveryService,
-      priceMin,
-      priceMax,
-      currencyId
-    } = arguments[4] || {};
-    // All values are required and must be sent (not undefined, null, or empty string)
-    if (
-      forSale === undefined || forSale === null || forSale === '' ||
-      deliveryService === undefined || deliveryService === null || deliveryService === '' ||
-      priceMin === undefined || priceMin === null || priceMin === '' ||
-      priceMax === undefined || priceMax === null || priceMax === ''
-    ) {
-      throw new Error('forSale, deliveryService, priceMin, and priceMax must be sent');
-    }
-    const filter = {};
-    if (categoryId) filter.categoryId = Number(categoryId);
-    if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
-    if (currencyId !== undefined && currencyId !== null && currencyId !== '') filter.currencyId = Number(currencyId);
-    filter.isApproved = true;
-    filter.forSale = forSale === 'true' || forSale === true;
-    filter.deliveryService = deliveryService === 'true' || deliveryService === true;
-    // If priceMin and priceMax are both 0, do not filter by price
-    if (!(Number(priceMin) === 0 && Number(priceMax) === 0)) {
-      filter.price = {};
-      if (typeof priceMin !== 'undefined' && priceMin !== '' && priceMin !== null) filter.price.$gte = Number(priceMin);
-      if (typeof priceMax !== 'undefined' && priceMax !== '' && priceMax !== null) filter.price.$lte = Number(priceMax);
+    // If categoryId is 3, ignore filters and only apply categoryId and subCategoryId
+    let filter = {};
+    if (categoryId == 3 || categoryId === '3') {
+      if (categoryId) filter.categoryId = Number(categoryId);
+      if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
+      filter.isApproved = true;
+    } else {
+      const {
+        forSale,
+        deliveryService,
+        priceMin,
+        priceMax,
+        currencyId
+      } = arguments[4] || {};
+      // All values are required and must be sent (not undefined, null, or empty string)
+      if (
+        forSale === undefined || forSale === null || forSale === '' ||
+        deliveryService === undefined || deliveryService === null || deliveryService === '' ||
+        priceMin === undefined || priceMin === null || priceMin === '' ||
+        priceMax === undefined || priceMax === null || priceMax === ''
+      ) {
+        throw new Error('forSale, deliveryService, priceMin, and priceMax must be sent');
+      }
+      if (categoryId) filter.categoryId = Number(categoryId);
+      if (subCategoryId) filter.subCategoryId = Number(subCategoryId);
+      if (currencyId !== undefined && currencyId !== null && currencyId !== '') filter.currencyId = Number(currencyId);
+      filter.isApproved = true;
+      filter.forSale = forSale === 'true' || forSale === true;
+      filter.deliveryService = deliveryService === 'true' || deliveryService === true;
+      // If priceMin and priceMax are both 0, do not filter by price
+      if (!(Number(priceMin) === 0 && Number(priceMax) === 0)) {
+        filter.price = {};
+        if (typeof priceMin !== 'undefined' && priceMin !== '' && priceMin !== null) filter.price.$gte = Number(priceMin);
+        if (typeof priceMax !== 'undefined' && priceMax !== '' && priceMax !== null) filter.price.$lte = Number(priceMax);
+      }
     }
     const skip = (page - 1) * limit;
     const ads = await Ad.find(filter)
