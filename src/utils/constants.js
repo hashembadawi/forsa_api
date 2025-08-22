@@ -105,6 +105,7 @@ const subCategories = [
   { id: 68, name: 'أماكن ترفيه', categoryId: 7 },
   { id: 69, name: 'خدمات عامة', categoryId: 7 },
   { id: 70, name: 'هدايا و ألعاب', categoryId: 7 },
+  { id: 71, name: 'مكاتب حوالات و صرافة', categoryId: 7 },
 
   // معدات صناعية
   { id: 71, name: 'تجهيزات مطاعم و أفران', categoryId: 8 },
