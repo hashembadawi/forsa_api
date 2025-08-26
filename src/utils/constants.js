@@ -374,7 +374,10 @@ const majorAreas = [
   { id: 208, name: 'الحميدية الجديدة', ProvinceId: 14 },
   { id: 209, name: 'الحميدية القديمة', ProvinceId: 14 },
   { id: 210, name: 'القنيطرة الجديدة', ProvinceId: 14 },
+  
   { id: 211, name: 'عين شيب ', ProvinceId: 3 },
+  { id: 212, name: 'سرمدا', ProvinceId: 3 },
+  { id: 213, name: 'حزانو', ProvinceId: 3 }
 ];
 
 module.exports = { currencies, categories, subCategories, provinces, majorAreas };
