@@ -25,7 +25,7 @@ const loginUser = async ({ phoneNumber, password }) => {
 
   return {
     token,
-    userName: `${user.firstName} ${user.lastName}`,
+    userName: `${user.firstName},${user.lastName}`,
     userEmail: user.email,
     userId: user._id,
     userPhone: user.phoneNumber,
