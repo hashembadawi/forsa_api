@@ -5,12 +5,11 @@ const adSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   userName: { type: String, required: true },
   userPhone: { type: String, required: true },
-  pic1: { type: String, required: true },
-  pic2: { type: String },
-  pic3: { type: String },
-  pic4: { type: String },
-  pic5: { type: String },
-  pic6: { type: String },
+  images: {
+    type: [{ type: String }],
+    required: false
+  },
+  thumbnail: { type: String, required: true },
   price: { type: Number, required: true, set: v => v == null ? v : parseFloat(v) },
   currencyId: { type: Number, required: true },
   currencyName: { type: String, required: true },

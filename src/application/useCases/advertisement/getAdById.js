@@ -9,19 +9,12 @@ const getAdById = async (adId) => {
 
     // Convert Mongoose document to plain object
     const adObject = ad.toObject();
-    // Map the ad to include images
-    const mappedAd = {
+    // Return ad with images and thumbnail fields
+    return {
       ...adObject,
-      images: [adObject.pic1, adObject.pic2, adObject.pic3, adObject.pic4, adObject.pic5, adObject.pic6].filter(Boolean),
+      images: adObject.images || [],
+      thumbnail: adObject.thumbnail,
     };
-    delete mappedAd.pic1;
-    delete mappedAd.pic2;
-    delete mappedAd.pic3;
-    delete mappedAd.pic4;
-    delete mappedAd.pic5;
-    delete mappedAd.pic6;
-
-    return mappedAd;
   } catch (error) {
     throw error;
   }

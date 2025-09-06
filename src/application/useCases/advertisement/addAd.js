@@ -4,7 +4,7 @@ const addAd = async (adData, userId) => {
   const requiredFields = [
     'userId', 'userPhone', 'userName', 'adTitle', 'price', 'currencyId',
     'currencyName', 'categoryId', 'categoryName', 'subCategoryId', 'subCategoryName',
-    'cityId', 'cityName', 'regionId', 'regionName', 'images'
+    'cityId', 'cityName', 'regionId', 'regionName', 'thumbnail'
   ];
 
   const missingFields = requiredFields.filter(field => !adData[field]);
@@ -12,21 +12,11 @@ const addAd = async (adData, userId) => {
     throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
   }
 
-  if (adData.images.length === 0) {
-    throw new Error('At least one image is required');
-  }
-   
   const data = {
     ...adData,
     price: adData.price !== undefined ? parseFloat(adData.price) : adData.price,
     userId,
     createDate: new Date(),
-    pic1: adData.images[0],
-    pic2: adData.images[1] || '',
-    pic3: adData.images[2] || '',
-    pic4: adData.images[3] || '',
-    pic5: adData.images[4] || '',
-    pic6: adData.images[5] || '',
   };
 
   try {
