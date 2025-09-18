@@ -4,6 +4,7 @@ const getNotApprovedAds = require('../../application/useCases/manager/getNotAppr
 const approveAd = require('../../application/useCases/manager/approveAd');
 const rejectAd = require('../../application/useCases/manager/rejectAd');
 const updateUser = require('../../application/useCases/manager/updateUser');
+const saveImage = require('../../application/useCases/manager/saveImage');
 const managerController = {
   async dashboardData(req, res) {
     try {
@@ -56,7 +57,20 @@ const managerController = {
     } catch (err) {
       handleServerError(res, err);
     }
+  },
+  async saveImage(req, res) {
+    try {
+      const { content } = req.body;
+      if (!content) {
+        return res.status(400).json({ message: 'Image content is required' });
+      }
+      const imageId = await saveImage({ content });
+      res.status(201).json({ imageId });
+    } catch (err) {
+      handleServerError(res, err);
+    }
   }
+
 };
 
 module.exports = managerController;

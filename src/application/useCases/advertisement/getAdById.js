@@ -4,7 +4,7 @@ const getAdById = async (adId) => {
     // Fetch the ad by ID
     const ad = await adRepository.findById(adId);
     if (!ad) {
-      throw new Error('Ad not found');
+      throw new Error('الاعلان غير موجود');
     }
 
     // Convert Mongoose document to plain object

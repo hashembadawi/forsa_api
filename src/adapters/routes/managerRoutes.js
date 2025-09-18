@@ -10,6 +10,7 @@ router.get('/notApproved-ads', authenticateToken, managerController.notApprovedA
 router.put('/approve-ad/:id', authenticateToken, managerController.approveAd);
 router.delete('/reject-ad/:id', authenticateToken, managerController.rejectAd);
 router.post('/update-user', authenticateToken, managerController.updateUser);
+router.post('/images-mgm', authenticateToken, managerController.saveImage);
 
 
 module.exports = router;
