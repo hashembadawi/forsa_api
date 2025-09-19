@@ -6,6 +6,7 @@ const rejectAd = require('../../application/useCases/manager/rejectAd');
 const updateUser = require('../../application/useCases/manager/updateUser');
 const saveImage = require('../../application/useCases/manager/saveImage');
 const getAllImages = require('../../application/useCases/manager/getAllImages');
+const deleteImageById = require('../../application/useCases/manager/deleteImageById');
 const managerController = {
   async dashboardData(req, res) {
     try {
@@ -79,8 +80,16 @@ const managerController = {
     } catch (err) {
       handleServerError(res, err);
     }
+  },
+  async deleteImageById(req, res) {
+    try {
+      const imageId = req.params.id;
+      await deleteImageById(imageId);
+      res.status(204).send();
+    } catch (err) {
+      handleServerError(res, err);
+    }
   }
-
 };
 
 module.exports = managerController;

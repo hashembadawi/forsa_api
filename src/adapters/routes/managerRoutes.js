@@ -12,5 +12,6 @@ router.delete('/reject-ad/:id', authenticateToken, managerController.rejectAd);
 router.post('/update-user', authenticateToken, managerController.updateUser);
 router.post('/images-mgm', authenticateToken, managerController.saveImage);
 router.get('/images-mgm', authenticateToken, managerController.getAllImages);
+router.delete('/images-mgm/:id', authenticateToken, managerController.deleteImageById);
 
 module.exports = router;

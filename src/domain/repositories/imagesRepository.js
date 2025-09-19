@@ -8,6 +8,9 @@ class ImagesRepository {
   async findAll(offset = 0, limit = 20) {
     return await Image.find().skip(offset).limit(limit);
   }
+  async deleteImageById(id) {
+    return await Image.findByIdAndDelete(id);
+  }
 }
 
 module.exports = new ImagesRepository();
