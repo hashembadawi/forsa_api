@@ -5,6 +5,7 @@ const approveAd = require('../../application/useCases/manager/approveAd');
 const rejectAd = require('../../application/useCases/manager/rejectAd');
 const updateUser = require('../../application/useCases/manager/updateUser');
 const saveImage = require('../../application/useCases/manager/saveImage');
+const getAllImages = require('../../application/useCases/manager/getAllImages');
 const managerController = {
   async dashboardData(req, res) {
     try {
@@ -66,6 +67,15 @@ const managerController = {
       }
       const imageId = await saveImage({ content });
       res.status(201).json({ imageId });
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+  async getAllImages(req, res) {
+    try {
+      const { page = 1, limit = 20 } = req.query;
+      const images = await getAllImages(page, limit);
+      res.status(200).json(images);
     } catch (err) {
       handleServerError(res, err);
     }
