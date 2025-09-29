@@ -5,8 +5,8 @@ class ImagesRepository {
     const image = new Image({ content });
     return await image.save();
   }
-  async findAll(offset = 0, limit = 20) {
-    return await Image.find().skip(offset).limit(limit);
+  async findAll() {
+    return await Image.find();
   }
   async deleteImageById(id) {
     return await Image.findByIdAndDelete(id);
