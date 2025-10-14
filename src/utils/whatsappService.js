@@ -100,7 +100,7 @@ class WhatsAppService {
   }
 
   async sendVerificationCode(phoneNumber, verificationCode) {
-    const message = `رمز التحقق الخاص لتطبيق سوق سوريا: ${verificationCode}\n\nهذا الرمز سينتهي صلاحيته خلال 10 دقائق. يرجى عدم مشاركة هذا الرمز مع أي شخص.`;
+    const message = `رمز التحقق الخاص لتطبيق فرصة: ${verificationCode}\n\nهذا الرمز سينتهي صلاحيته خلال 10 دقائق. يرجى عدم مشاركة هذا الرمز مع أي شخص.`;
 
     try {
       await this.sendMessage(phoneNumber, message);
