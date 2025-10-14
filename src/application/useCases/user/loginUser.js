@@ -17,10 +17,13 @@ const loginUser = async ({ phoneNumber, password }) => {
     throw new Error('Invalid credentials');
   }
 
+  // Allow optional expiration via environment variable JWT_EXPIRES_IN.
+  // If JWT_EXPIRES_IN is not set the token will be created without an expiresIn (no expiration).
+  const signOptions = process.env.JWT_EXPIRES_IN ? { expiresIn: process.env.JWT_EXPIRES_IN } : undefined;
   const token = jwt.sign(
     { userId: user._id, username: user.email },
     process.env.JWT_SECRET,
-    { expiresIn: '150h' }
+    signOptions
   );
 
   return {
