@@ -46,8 +46,32 @@ const userController = {
     }
   },
 
-  validateToken(req, res) {
-    res.status(200).json({ valid: true, user: req.user });
+  async validateToken(req, res) {
+    try {
+      const userRepository = require('../../domain/repositories/userRepository');
+      const user = await userRepository.findById(req.user.userId);
+      
+      if (!user) {
+        return res.status(404).json({ valid: false, message: 'User not found' });
+      }
+
+      res.status(200).json({
+        valid: true,
+        user: {
+          userId: user._id,
+          phoneNumber: user.phoneNumber,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profileImage: user.profileImage,
+          accountNumber: user.accountNumber,
+          isVerified: user.isVerified,
+          isAdmin: user.isAdmin,
+          isSpecial: user.isSpecial
+        }
+      });
+    } catch (err) {
+      handleServerError(res, err);
+    }
   },
   async deleteUserAccount(req, res) {
     try {
