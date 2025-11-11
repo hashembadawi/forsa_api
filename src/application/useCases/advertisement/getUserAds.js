@@ -4,10 +4,9 @@ const UserRepository = require('../../../domain/repositories/userRepository');
 const getUserAds = async (userId, page = 1, limit = 5) => {
   const { ads, total } = await AdRepository.findByUserId(userId, page, limit);
   const user = await UserRepository.findById(userId);
-  const mappedAds = ads.map(p => ({
-    ...p,
-    images: p.images || [],
-    thumbnail: p.thumbnail,
+  const mappedAds = ads.map(({ images, ...rest }) => ({
+    ...rest,
+    thumbnail: rest.thumbnail,
   }));
 
   return {
