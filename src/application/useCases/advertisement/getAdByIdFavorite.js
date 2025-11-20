@@ -3,7 +3,8 @@ const userFavoriteAdsRepository = require('../../../domain/repositories/userFavo
 const getAdByIdFavorite = async (adId, userId) => {
     try {
         // Fetch the ad by ID
-        const ad = await adRepository.findByIdFavorite(adId, userId);
+        // use the existing findById repository method (findByIdFavorite did not exist)
+        const ad = await adRepository.findById(adId);
         if (!ad) {
             throw new Error('الاعلان غير موجود');
         }
