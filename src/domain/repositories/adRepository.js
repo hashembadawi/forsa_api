@@ -141,6 +141,18 @@ class AdRepository {
     const total = await Ad.countDocuments({ categoryId: Number(categoryId), isApproved: true });
     return { ads, total };
   }
+
+  // Return related ads with the same categoryId excluding a specific ad id
+  async findRelatedByCategory(categoryId, excludeAdId, limit = 5) {
+    const filter = { isApproved: true };
+    if (categoryId !== undefined && categoryId !== null) filter.categoryId = Number(categoryId);
+    if (excludeAdId) filter._id = { $ne: excludeAdId };
+    const ads = await Ad.find(filter)
+      .sort({ createDate: -1 })
+      .limit(limit)
+      .lean();
+    return ads;
+  }
 }
 
 module.exports = new AdRepository();

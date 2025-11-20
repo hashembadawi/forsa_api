@@ -13,12 +13,20 @@ const getAdByIdFavorite = async (adId, userId) => {
         // Check whether this ad is in the user's favorites
         const isFav = await userFavoriteAdsRepository.isFavorite(userId, adId);
 
-        // Return ad with images, thumbnail and isFavorite flag
+        // Fetch top 5 related ads in the same category (exclude current ad)
+        const related = await adRepository.findRelatedByCategory(adObject.categoryId, adId, 5);
+        const relatedAds = (related || []).map(({ images, ...rest }) => ({
+            ...rest,
+            thumbnail: rest.thumbnail,
+        }));
+
+        // Return ad with images, thumbnail, isFavorite flag and relatedAds
         return {
             ...adObject,
             images: adObject.images || [],
             thumbnail: adObject.thumbnail,
-            isFavorite: !!isFav
+            isFavorite: !!isFav,
+            relatedAds
         };
     } catch (error) {
         throw error;
