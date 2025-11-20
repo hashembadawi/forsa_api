@@ -10,8 +10,20 @@ const searchAdsByTitle = require('../../application/useCases/advertisement/searc
 const getAdvertiserInfo = require('../../application/useCases/advertisement/getUserAds'); 
 const getAdById = require('../../application/useCases/advertisement/getAdById');
 const searchAdsByCategory = require('../../application/useCases/advertisement/searchAdsByCategory');
+const getAdByIdFavorite = require('../../application/useCases/advertisement/getAdByIdFavorite');
 
 const adController = {
+  async getAdByIdFavorite(req, res) {
+    try {
+      const { adId } = req.params;
+      const userId = req.user.userId;
+      const result = await getAdByIdFavorite(adId, userId);
+      res.json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+
   async addAd(req, res) {
     try {
       if (req.body && req.body.price !== undefined) {
