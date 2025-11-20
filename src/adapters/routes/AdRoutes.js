@@ -15,5 +15,6 @@ router.get('/search-by-title', adController.searchAdsByTitle);
 router.get('/search-by-category', adController.searchAdsByCategory);
 router.get('/getAdById/:adId', adController.getAdById);
 router.get('/getAdByIdFavorite/:adId',authenticateToken, adController.getAdByIdFavorite)
+router.get('/suggested-ads', adController.getSuggestedAds);
 
 module.exports = router;

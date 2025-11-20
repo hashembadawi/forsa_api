@@ -11,8 +11,20 @@ const getAdvertiserInfo = require('../../application/useCases/advertisement/getU
 const getAdById = require('../../application/useCases/advertisement/getAdById');
 const searchAdsByCategory = require('../../application/useCases/advertisement/searchAdsByCategory');
 const getAdByIdFavorite = require('../../application/useCases/advertisement/getAdByIdFavorite');
+const getSuggestedAds = require('../../application/useCases/advertisement/getSuggestedAds');
 
 const adController = {
+
+  async getSuggestedAds(req, res) {
+    try {
+      const { q, limit } = req.query;
+      const result = await getSuggestedAds(q, limit);
+      res.json(result);
+    } catch (err) {
+      handleServerError(res, err);
+    }
+  },
+
   async getAdByIdFavorite(req, res) {
     try {
       const { adId } = req.params;

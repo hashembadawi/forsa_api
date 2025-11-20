@@ -130,6 +130,23 @@ class AdRepository {
     return { ads, total };
   }
 
+  // Search ads by a free-text string across title and description
+  async findBySearchString(searchString, limit = 5) {
+    if (!searchString || String(searchString).trim() === '') return [];
+    const regex = new RegExp(searchString, 'i');
+    const ads = await Ad.find({
+      isApproved: true,
+      $or: [
+        { adTitle: regex },
+        { description: regex }
+      ]
+    })
+      .sort({ createDate: -1 })
+      .limit(limit)
+      .lean();
+    return ads;
+  }
+
   //findByCategoryId
   async findByCategoryId(categoryId, page, limit) {
     const skip = (page - 1) * limit;
